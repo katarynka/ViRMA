@@ -102,6 +102,7 @@ public class ViRMA_QueryController : MonoBehaviour
 
     private void Update()
     {
+
         QueryReloadController();
 
         //ConsoleLogCurrentQuery(); // debugging

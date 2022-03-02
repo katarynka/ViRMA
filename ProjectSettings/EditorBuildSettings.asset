@@ -12,9 +12,13 @@ EditorBuildSettings:
     path: Assets/Scenes/ViRMA.unity
     guid: e58c2d9f43b36ff40999b7d28f7df884
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 45d27a5b46bb7e24eb32c010907b23a6,
+      type: 2}
     Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: a21b8fc8532fed649a087d00f343bcd9,
       type: 2}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 3370fd58550f02543a45d5bdc949633d,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: adcd3778b782a644aaa99f7f97cc56c1,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 48619f7220e6f6f42952b0222290e545,
       type: 2}

@@ -51,6 +51,9 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
     public SteamVR_Action_Boolean timeline_Scroll;
     public SteamVR_Action_Boolean timeline_Back;
 
+    //private ViRMA_MainMenu test = new ViRMA_MainMenu();
+    
+
     private void Awake()
     {
         // assign all global scripts
@@ -68,23 +71,30 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
     }
     private void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Global space pressed!");
+            GetComponent<ViRMA_MainMenu>().ToggleMainMenu(true);
+            //test.ToggleMainMenu(true);
+        }
         // SteamVR controller models take some frames to load so this waits for them to set some globals
-        InitialiseSteamVRControllers();
+        //InitialiseSteamVRControllers();
 
-        // control activation of SteamVR actions
-        ActionActivityController();
+        //// control activation of SteamVR actions
+        //ActionActivityController();
 
-        // keyboard functions
-        if (Input.GetKey("escape"))
-        {
-            Application.Quit();
-        }
-        if (Input.GetKey("p"))
-        {
-            Debug.Log("Screenshot taken: " + "C:/Users/Aaron Duane/Downloads/" + DateTime.Now.ToString("HH_mm_ss") + ".png");
-            ScreenCapture.CaptureScreenshot("C:/Users/Aaron Duane/Downloads/" + DateTime.Now.ToString("HH_mm_ss") + ".png", 2);
-            //ScreenCapture.CaptureScreenshot(System.IO.Directory.GetCurrentDirectory().ToString() + "/" + DateTime.Now.ToString("HH_mm_ss") + ".png", 2);
-        }
+        //// keyboard functions
+        //if (Input.GetKey("escape"))
+        //{
+        //    Application.Quit();
+        //}
+        //if (Input.GetKey("p"))
+        //{
+        //    Debug.Log("Screenshot taken: " + "C:/Users/Aaron Duane/Downloads/" + DateTime.Now.ToString("HH_mm_ss") + ".png");
+        //    ScreenCapture.CaptureScreenshot("C:/Users/Aaron Duane/Downloads/" + DateTime.Now.ToString("HH_mm_ss") + ".png", 2);
+        //    //ScreenCapture.CaptureScreenshot(System.IO.Directory.GetCurrentDirectory().ToString() + "/" + DateTime.Now.ToString("HH_mm_ss") + ".png", 2);
+        //}
     }
 
     // actions

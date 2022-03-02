@@ -59,7 +59,9 @@ public class ViRMA_MainMenu : MonoBehaviour
     private List<ViRMA_UiElement> toggledLocationUiElements;
     
     ///////////////////////////////////////////////// custom buttons
-    public List<GameObject> customButtons; 
+    public List<GameObject> customButtons;
+
+    public GameObject MainMenu;
 
     private void Awake()
     {
@@ -95,6 +97,10 @@ public class ViRMA_MainMenu : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Main menu space pressed!");
+        }
         MainMenuRepositioning();
 
         ProjFilterGenerateBtns();
@@ -617,17 +623,21 @@ public class ViRMA_MainMenu : MonoBehaviour
             */
 
             // place in front of player
-            Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
+            //Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
+            //Vector3 flattenedVector = Camera.main.transform.TransformPoint(Vector3.forward * distance);
+            Vector3 flattenedVector = new Vector3(0,1,2);
+
             flattenedVector.y = 0;
             flattenedVector.Normalize();
-            Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.5f;
-            
+            //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.5f;
+            Vector3 spawnPos = new Vector3(0, 1, 2);
+
             // save menu position if already moved
             if (mainMenuPositionSet)
             {
                 transform.position = new Vector3(spawnPos.x, mainMenuPosition.y, spawnPos.z);    
                 
-                transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
+                //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
                 Vector3 currentRot = transform.rotation.eulerAngles;
                 currentRot.x = mainMenuAngle;
                 Quaternion newRot = Quaternion.Euler(currentRot);
@@ -635,8 +645,9 @@ public class ViRMA_MainMenu : MonoBehaviour
             }
             else
             {
-                transform.position = spawnPos;
-                transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
+                MainMenu.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 1;
+                //transform.position = spawnPos;
+                //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
             }
         }
         else
