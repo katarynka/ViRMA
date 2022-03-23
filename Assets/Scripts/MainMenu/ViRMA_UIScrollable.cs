@@ -16,7 +16,7 @@ public class ViRMA_UIScrollable : MonoBehaviour
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        globals = GetComponent<ViRMA_GlobalsAndActions>();
         scrollRect = GetComponent<ScrollRect>();
         scrollContent = scrollRect.content.transform;
         rectangle = transform.GetComponent<RectTransform>().rect;

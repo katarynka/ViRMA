@@ -14,9 +14,12 @@ public class ViRMA_Cell : MonoBehaviour
 
     public MaterialPropertyBlock cellRendPropBlock;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
         thisCellRend = GetComponent<Renderer>();
         thisCellMesh = GetComponent<MeshFilter>().mesh;

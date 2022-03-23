@@ -26,9 +26,12 @@ public class ViRMA_DimExplorerGroup : MonoBehaviour
     public GameObject siblingsDimExGrp;
     public GameObject childrenDimExGrp;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
         dimExCollider = gameObject.AddComponent<BoxCollider>();
 

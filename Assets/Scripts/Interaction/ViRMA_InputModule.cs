@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using Valve.VR;
 using Valve.VR.InteractionSystem;
+using System.Collections.Generic;
 
 public class ViRMA_InputModule : BaseInputModule
 {
@@ -15,11 +16,16 @@ public class ViRMA_InputModule : BaseInputModule
 	private GameObject pointerTargetObject = null;
 	private PointerEventData pointerData = null;
 
-    protected override void Awake()
+	public List<UnityEngine.XR.InputDevice> rightHandDevices;
+	public UnityEngine.XR.InputDevice oculusRightController;
+
+	protected override void Awake()
     {
         base.Awake();
 
-		pointerData = new PointerEventData(eventSystem);
+		//rightHandDevices = new List<UnityEngine.XR.InputDevice>();
+		//pointerData = new PointerEventData(eventSystem);
+
 
 		pointerUIEnabled = false;
 		contactUIEnabled = true;
@@ -97,6 +103,7 @@ public class ViRMA_InputModule : BaseInputModule
 	}
 	private void processRelease(PointerEventData data)
 	{
+		Debug.Log("pointer release");
 		// execute process up
 		ExecuteEvents.Execute(data.pointerPress, data, ExecuteEvents.pointerUpHandler);
 
@@ -153,7 +160,6 @@ public class ViRMA_InputModule : BaseInputModule
 			{
 				processPress(pointerData);
 			}
-
 			// release
 			if (pointerClickAction.GetStateUp(pointerTargetSource))
 			{

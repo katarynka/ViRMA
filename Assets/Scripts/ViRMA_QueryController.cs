@@ -31,10 +31,13 @@ public class ViRMA_QueryController : MonoBehaviour
     // diect filters
     public List<Query.Filter> activeFilters = new List<Query.Filter>();
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
         // define ViRMA globals script
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
         buildingQuery = new Query();
 
         activeXAxisId = -1;

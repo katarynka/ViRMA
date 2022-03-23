@@ -7,10 +7,10 @@ using TMPro;
 [RequireComponent(typeof(Interactable))]
 public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
-	// SteamVR: used for UI interaction with controller
-	//private ViRMA_GlobalsAndActions globals;
+    // SteamVR: used for UI interaction with controller
+    private ViRMA_GlobalsAndActions globals;
 
-	public CustomEvents.UnityEventHand onHandClick;
+    public CustomEvents.UnityEventHand onHandClick;
 	protected Hand currentHand;
 	private BoxCollider col;
 
@@ -21,9 +21,9 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	private Text btnText;
 	private TMP_Text btnProText;
 	private RawImage btnIcon;
-	public Button btn;
+    public Button btn;
 
-	public Color defaultBackgroundColor;
+    public Color defaultBackgroundColor;
 	public Color defaultTextColor;
 
 	public Color hoverBackgroundColor;
@@ -39,11 +39,16 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	public bool toggle;
 	public bool isToggled;
 
-	public object buttonData; // (to do)
+	public object buttonData; // (to do) 
+	
+	public OVRCameraRig m_CameraRig;
 
 	protected virtual void Awake()
 	{
-		//globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+
+		m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+
 		btnBackground = GetComponent<Image>();
 		btnText = GetComponentInChildren<Text>();
 		btnProText = GetComponentInChildren<TMP_Text>();
@@ -152,7 +157,11 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	}
 	public void OnPointerClick(PointerEventData eventData)
     {
-		SetBtnNormalState();
+        Debug.Log("what was clicked");
+		Debug.Log(eventData);
+		Debug.Log(gameObject);
+        
+        SetBtnNormalState();
 	}
 
 	// general

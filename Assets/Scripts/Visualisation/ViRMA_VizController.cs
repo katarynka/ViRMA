@@ -39,10 +39,13 @@ public class ViRMA_VizController : MonoBehaviour
     private float defaultCellSpacingRatio = 1.5f;
     private string cellMaterial = "Materials/BasicTransparent";
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
         // define ViRMA globals script
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
         activeQuery = new Query();
 
         // setup cells and axes wrapper
@@ -80,8 +83,8 @@ public class ViRMA_VizController : MonoBehaviour
         // set loading flags to true and fade controllers
         vizFullyLoaded = false;
         globals.queryController.vizQueryLoading = true;
-        globals.ToggleControllerFade(Player.instance.leftHand, true);
-        globals.ToggleControllerFade(Player.instance.rightHand, true);
+        //globals.ToggleControllerFade(Player.instance.leftHand, true);
+        //globals.ToggleControllerFade(Player.instance.rightHand, true);
 
         // get cell data from server (WAIT FOR)
         yield return StartCoroutine(ViRMA_APIController.GetCells(submittedQuery, (cells) => {
@@ -116,8 +119,8 @@ public class ViRMA_VizController : MonoBehaviour
         // set loading flags to true and unfade controllers
         vizFullyLoaded = true;
         globals.queryController.vizQueryLoading = false;
-        globals.ToggleControllerFade(Player.instance.leftHand, false);
-        globals.ToggleControllerFade(Player.instance.rightHand, false);
+        //globals.ToggleControllerFade(Player.instance.leftHand, false);
+        //globals.ToggleControllerFade(Player.instance.rightHand, false);
     }
     private void GenerateTexturesAndTextureArrays(List<Cell> cellData)
     {
@@ -536,12 +539,18 @@ public class ViRMA_VizController : MonoBehaviour
             // calculate distance to place cells/axes in front of player based on longest axis
             float distance = Mathf.Max(Mathf.Max(bounds.size.x, bounds.size.y), bounds.size.z);
             distance = distance < 1 ? 1.0f : distance;
-            Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
+
+            Vector3 flattenedVector = new Vector3(0, 1, 2);
+
+            //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.5f;
+
+            //Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
             flattenedVector.y = 0;
             flattenedVector.Normalize();
-            Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * distance;
+            Vector3 spawnPos = new Vector3(0, 1, 2);
+            //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * distance;
             transform.position = spawnPos;
-            transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position); // flip viz 180 degrees from 'LookAt'
+            //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position); // flip viz 180 degrees from 'LookAt'
         }
 
         // set new layer to prevent physical interactions with other objects on that layer

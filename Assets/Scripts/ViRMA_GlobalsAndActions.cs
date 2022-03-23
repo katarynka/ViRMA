@@ -2,6 +2,7 @@
 using Valve.VR;
 using Valve.VR.InteractionSystem;
 using System;
+using System.Collections.Generic;
 
 public class ViRMA_GlobalsAndActions : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
     public ViRMA_DimExplorer dimExplorer;
     public ViRMA_MainMenu mainMenu;
     public ViRMA_Timeline timeline;
+    public ViRMA_Keyboard keyboard;
 
     // --- SteamVR action sets --- \\
 
@@ -51,17 +53,28 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
     public SteamVR_Action_Boolean timeline_Scroll;
     public SteamVR_Action_Boolean timeline_Back;
 
-    //private ViRMA_MainMenu test = new ViRMA_MainMenu();
+    public List<UnityEngine.XR.InputDevice> rightHandDevices;
+    public UnityEngine.XR.InputDevice oculusRightController;
     
+    public List<UnityEngine.XR.InputDevice> leftHandDevices;
+    public UnityEngine.XR.InputDevice oculusLeftController;
+
 
     private void Awake()
     {
+        // assign Oculus controllers
+        rightHandDevices = new List<UnityEngine.XR.InputDevice>();
+        leftHandDevices = new List<UnityEngine.XR.InputDevice>();
+        //UnityEngine.XR.InputDevices.GetDevicesAtXRNode(UnityEngine.XR.XRNode.RightHand, rightHandDevices);
+        //oculusRightController = rightHandDevices[0];
+
         // assign all global scripts
         vizController = GameObject.Find("VisualisationController").GetComponent<ViRMA_VizController>();
         queryController = GameObject.Find("QueryController").GetComponent<ViRMA_QueryController>();
         dimExplorer = GameObject.Find("DimensionExplorer").GetComponent<ViRMA_DimExplorer>();
         mainMenu = GameObject.Find("MainMenu").GetComponent<ViRMA_MainMenu>();
         timeline = GameObject.Find("Timeline").GetComponent<ViRMA_Timeline>();
+        keyboard = GameObject.Find("DimExKeyboard").GetComponent<ViRMA_Keyboard>();
 
         // assign all action sets
         AssignAllActionSets();
@@ -69,15 +82,36 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
         // assign specific actions to functionality in ViRMA scripts
         AssignAllCustomActions();
     }
+
     private void Update()
     {
+             
+        //Debug.Log("controller position? " + UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftHand));
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        UnityEngine.XR.InputDevices.GetDevicesAtXRNode(UnityEngine.XR.XRNode.RightHand, rightHandDevices);
+        oculusRightController = rightHandDevices[0];
+
+        UnityEngine.XR.InputDevices.GetDevicesAtXRNode(UnityEngine.XR.XRNode.LeftHand, leftHandDevices);
+        oculusLeftController = leftHandDevices[0];
+
+        bool triggerValue;
+        //if (oculusRightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
+        //{
+        //    Debug.Log("Trigger button is pressed");
+        //    mainMenu.ToggleMainMenu(true);
+        //}
+        //if (oculusRightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
+        //{
+        //    //Debug.Log("Primary button is pressed");
+        //    mainMenu.ToggleMainMenu(true);
+        //}
+
+        if (oculusLeftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
         {
-            Debug.Log("Global space pressed!");
-            GetComponent<ViRMA_MainMenu>().ToggleMainMenu(true);
-            //test.ToggleMainMenu(true);
+            mainMenu.ToggleMainMenu(true);
         }
+
+
         // SteamVR controller models take some frames to load so this waits for them to set some globals
         //InitialiseSteamVRControllers();
 
@@ -96,6 +130,7 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
         //    //ScreenCapture.CaptureScreenshot(System.IO.Directory.GetCurrentDirectory().ToString() + "/" + DateTime.Now.ToString("HH_mm_ss") + ".png", 2);
         //}
     }
+
 
     // actions
     private void AssignAllActionSets()

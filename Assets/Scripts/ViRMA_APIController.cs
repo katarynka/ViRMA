@@ -357,7 +357,9 @@ public class ViRMA_APIController : MonoBehaviour
     //public static string imagesDirectory = "C:/Users/aaron/Documents/Unity Projects/ViRMA/LaugavegurDataDDS/"; 
 
     //public static string imagesDirectory = System.IO.Directory.GetCurrentDirectory().ToString() + "/../LSC2021/";
-    public static string imagesDirectory = "D:/Downloads/LSC2021NoJpg/LSC2021/";
+    //public static string imagesDirectory = "D:/Downloads/LSC2021NoJpg/LSC2021/";
+
+    public static string imagesDirectory = "H:/LSC2021/";
 
     // private
     private static JSONNode jsonData;

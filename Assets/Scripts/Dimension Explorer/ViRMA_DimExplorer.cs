@@ -23,9 +23,12 @@ public class ViRMA_DimExplorer : MonoBehaviour
 
     public bool dimensionExpLorerLoaded;  
 
+    public OVRCameraRig m_CameraRig;
+    
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
         horizontalRigidbody = GetComponent<Rigidbody>();
 
@@ -170,9 +173,11 @@ public class ViRMA_DimExplorer : MonoBehaviour
         if (dimExKeyboard.gameObject != null && dimExKeyboard.gameObject.activeSelf)
         {
             Vector3 keyboardPos = dimExKeyboard.gameObject.transform.position;
-            float playerHeight = Player.instance.eyeHeight;
+            float playerHeight = m_CameraRig.centerEyeAnchor.localPosition.y;
+            //float playerHeight = Player.instance.eyeHeight;
+
             transform.position = new Vector3(keyboardPos.x, playerHeight, keyboardPos.z);
-            transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
+            //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
 
             float distanceBehind = 0.25f;
             Vector3 newPosition = transform.position + (transform.forward * distanceBehind);

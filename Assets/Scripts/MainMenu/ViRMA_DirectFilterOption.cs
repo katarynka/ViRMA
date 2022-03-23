@@ -13,9 +13,12 @@ public class ViRMA_DirectFilterOption : MonoBehaviour
     public TextMeshProUGUI labelText;
     public Tag directFilterData;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
         rigidBody = gameObject.AddComponent<Rigidbody>();
         rigidBody.isKinematic = true;
         col = gameObject.AddComponent<BoxCollider>();

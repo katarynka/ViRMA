@@ -56,7 +56,7 @@ public class ViRMA_Timeline : MonoBehaviour
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        globals = GetComponent<ViRMA_GlobalsAndActions>();
         timelineRb = GetComponent<Rigidbody>();
         timelineLoaded = false;
 

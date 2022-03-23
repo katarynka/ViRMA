@@ -22,11 +22,14 @@ public class ViRMA_Keyboard : MonoBehaviour
     public bool keyboardFaded;
     public bool keyboardMoving;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
-        keys = GetComponentsInChildren<Button>();   
+        keys = GetComponentsInChildren<Button>();
     }
 
     private void Start()
@@ -124,13 +127,18 @@ public class ViRMA_Keyboard : MonoBehaviour
 
         if (onOff)
         {
-            Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
+            Vector3 flattenedVector = new Vector3(0, 1, 1);
+
             flattenedVector.y = 0;
             flattenedVector.Normalize();
-            Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.4f;
-            spawnPos.y = spawnPos.y * 0.75f;
+            Vector3 spawnPos = new Vector3(0, 1, 1);
+            //Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
+            //flattenedVector.y = 0;
+            //flattenedVector.Normalize();
+            //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.4f;
+            spawnPos.y = spawnPos.y * 0.2f;
             transform.position = spawnPos;
-            transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
+            //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
             keyboardLoaded = true;
         }
         else
@@ -232,7 +240,7 @@ public class ViRMA_Keyboard : MonoBehaviour
     private void SubmitKey(Button key)
     {
         string buttonName = key.gameObject.name;
-
+        
         string submittedChar = "";
         if (key.GetComponentInChildren<Text>())
         {

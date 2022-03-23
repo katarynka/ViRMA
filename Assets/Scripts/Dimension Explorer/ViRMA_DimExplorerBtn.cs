@@ -18,11 +18,14 @@ public class ViRMA_DimExplorerBtn : MonoBehaviour
     public TextMeshPro textMesh;
     public BoxCollider col;
     public Renderer bgRend;
-    public MaterialPropertyBlock matPropBlock;    
+    public MaterialPropertyBlock matPropBlock;
+
+    public OVRCameraRig m_CameraRig;
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
         matPropBlock = new MaterialPropertyBlock();
     }

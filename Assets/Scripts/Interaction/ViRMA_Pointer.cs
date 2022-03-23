@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Valve.VR.InteractionSystem;
+//using Valve.VR.InteractionSystem;
 
 public class ViRMA_Pointer : MonoBehaviour
 {
