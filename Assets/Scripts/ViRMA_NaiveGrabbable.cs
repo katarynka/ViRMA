@@ -23,6 +23,12 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
     private bool isGrabbed = false;
 
     public float activationDistance;
+    public float grabBegin = 0.55f;
+    public float grabEnd = 0.35f;
+    protected float m_prevFlex;
+
+    [SerializeField]
+    protected OVRInput.Controller m_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,70 +40,82 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
     void Update()
     {
         PokeRenderer();
-        // If using controllers
+
+        // ovr grabbable stuff
+        float prevFlex = m_prevFlex;
+        // Update values from inputs
+        m_prevFlex = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, m_controller);
+        StartGrab();
+        //CheckForGrabOrRelease(prevFlex);
+
+
+        ControllerModelRendering();
+
+
+    }
+
+    void StartGrab()
+    {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && IsCloseEnough() && OVRInput.GetActiveController() == OVRInput.Controller.Touch)
         {
-            //if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
-            //{
-            //    virmaGrabStatus.grabStatus = true;
-            //    isGrabbed = true;
-            //    Debug.Log("should be grabbed " + virmaGrabStatus.grabStatus);
-            //}
-            poke = GameObject.Find("PokeLocation");
-            // Set thumbstick and trigger axes - these must remain in Update()
-            thumbstickAxes = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-            triggerAxis = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger);
-            Vector3 position = poke.transform.position;
-            poke.GetComponent<SphereCollider>().enabled = false;
-            poke.GetComponent<MeshRenderer>().enabled = false;
-
-            transform.position = position + new Vector3(0.015f, 0.015f, 0.015f);
-
-            if (allowThumbstickManipulation)
+            if(virmaGrabStatus.grabbedObject == null || virmaGrabStatus.grabbedObject == gameObject)
             {
-                ControllerRotation();
+                //virmaGrabStatus.grabStatus = true;
+                virmaGrabStatus.grabbedObject = gameObject;
+
+                poke = GameObject.Find("PokeLocation");
+                // Set thumbstick and trigger axes - these must remain in Update()
+                thumbstickAxes = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+                triggerAxis = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger);
+                Vector3 position = poke.transform.position;
+                poke.GetComponent<SphereCollider>().enabled = false;
+                poke.GetComponent<MeshRenderer>().enabled = false;
+
+                transform.position = position + new Vector3(0.015f, 0.015f, 0.015f);
+
+                if (allowThumbstickManipulation)
+                {
+                    ControllerRotation();
+                }
+                else
+                {
+                    // Set rotation of grabbed object - based on PokeLocation
+                    Quaternion rotation = poke.transform.rotation;
+                    rotation *= addition;
+                    transform.rotation = rotation;
+
+                    // ScrollableMenu additive rotation
+                    /*(-42f, -10, 180);*/
+                }
+
             }
             else
             {
-                // Set rotation of grabbed object - based on PokeLocation
-                Quaternion rotation = poke.transform.rotation;
-                rotation *= addition;
-                transform.rotation = rotation;
-
-                // ScrollableMenu additive rotation
-                /*(-42f, -10, 180);*/
+                virmaGrabStatus.grabbedObject = null;
             }
 
-            //if (OVRInput.GetUp(OVRInput.Button.SecondaryIndexTrigger) && isGrabbed && virmaGrabStatus.grabStatus)
-            //{
-            //    virmaGrabStatus.grabStatus = false;
-            //    isGrabbed = false;
-            //    Debug.Log("should not be grabbed " + virmaGrabStatus.grabStatus);
-            //}
+        }
+    }
 
-        } 
+        void EndGrab()
+    {
+        if (isGrabbed) 
+        {        
+            virmaGrabStatus.grabStatus = true;
+            isGrabbed = false;
+        }
+    }
 
-                // If using hands
-                //if (OVRInput.GetActiveController() == OVRInput.Controller.Hands && IsCloseEnough())
-                //{
-                //    if (OVRInput.Get(OVRInput.Button.Three)) 
-                //    {
-                //        GameObject parent = GameObject.Find("HandPokeInteractorLeft");
-
-                //        pokeFinger = GetChildWithName(parent, "HandIndexFingertip");
-
-                //        Vector3 position = pokeFinger.transform.position;
-                //        transform.position = position + new Vector3(0.035f, 0.035f, 0.035f);
-                //        if (faceRotation) {
-                //            transform.rotation = Camera.main.transform.rotation;
-                //        }
-                //    }
-                //}
-
-
-                ControllerModelRendering();
-
-
+    protected void CheckForGrabOrRelease(float prevFlex)
+    {
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && IsCloseEnough() && OVRInput.GetActiveController() == OVRInput.Controller.Touch && !virmaGrabStatus.grabStatus)
+        {
+            StartGrab();
+        }
+        else if ((m_prevFlex <= grabEnd) && (prevFlex > grabEnd))
+        {
+            EndGrab();
+        }
     }
 
     void PokeRenderer()
