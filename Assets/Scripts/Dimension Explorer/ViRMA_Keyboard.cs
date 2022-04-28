@@ -15,6 +15,8 @@ public class ViRMA_Keyboard : MonoBehaviour
     public GameObject loadingIcon;
     private Coroutine activeQueryCoroutine;
     public Hand handInteractingWithKeyboard;
+    public ViRMA_SearchTagsScrollableMenu scrollableQueryMenu;
+    public GameObject scrollableCanvas;
 
     // flags
     public bool dimExQueryLoading;
@@ -28,6 +30,9 @@ public class ViRMA_Keyboard : MonoBehaviour
     {
         m_CameraRig = FindObjectOfType<OVRCameraRig>();
         globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+        scrollableCanvas = GameObject.Find("ScrollableUnityCanvas");
+        scrollableQueryMenu = scrollableCanvas.GetComponentInChildren<ViRMA_SearchTagsScrollableMenu>();
+
 
         keys = GetComponentsInChildren<Button>();
     }
@@ -46,6 +51,10 @@ public class ViRMA_Keyboard : MonoBehaviour
         LoadingIndicator();
 
         KeyboardRepositioning();
+
+        PhysicalKeyboardInput();     // JBAL & KTOB - Physical keyboard interactions
+
+       
     }
 
     IEnumerator LateStart()
@@ -127,18 +136,10 @@ public class ViRMA_Keyboard : MonoBehaviour
 
         if (onOff)
         {
-            Vector3 flattenedVector = new Vector3(0, 1, 1);
 
-            flattenedVector.y = 0;
-            flattenedVector.Normalize();
-            Vector3 spawnPos = new Vector3(0, 1, 1);
-            //Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
-            //flattenedVector.y = 0;
-            //flattenedVector.Normalize();
-            //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.4f;
-            spawnPos.y = spawnPos.y * 0.2f;
-            transform.position = spawnPos;
-            //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
+            // Set keyboard position to be in front of the camera
+            transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 1f);
+            transform.rotation = Camera.main.transform.rotation;
             keyboardLoaded = true;
         }
         else
@@ -258,12 +259,16 @@ public class ViRMA_Keyboard : MonoBehaviour
 
                 dimExQueryLoading = true;
                 key.enabled = false;
-                StartCoroutine(globals.dimExplorer.ClearDimExplorer());           
+                StartCoroutine(globals.dimExplorer.ClearDimExplorer());
 
+                Debug.Log("scrollMenu ");
                 activeQueryCoroutine = StartCoroutine(ViRMA_APIController.SearchHierachies(typedWordString.ToLower(), (nodes) => {             
-                    StartCoroutine(globals.dimExplorer.LoadDimExplorer(nodes));
+                    //StartCoroutine(globals.dimExplorer.LoadDimExplorer(nodes));
+                    StartCoroutine(scrollableQueryMenu.PopulateMenu(nodes));
                     activeQueryCoroutine = null;
                     key.enabled = true;
+                    // INITIATE BUTTONS HERE???
+  
                 }));
             }      
         }
@@ -328,6 +333,70 @@ public class ViRMA_Keyboard : MonoBehaviour
             }        
         }
         
+    }
+
+    // JBAL & KTOB - keyboard inputs added to search string
+    private void PhysicalKeyboardInput()
+    {
+
+            //Check for escapekey
+            if (Input.GetKeyDown(KeyCode.Escape) && !keyboardFaded)
+            {
+                if (activeQueryCoroutine != null)
+                {
+                    StopCoroutine(activeQueryCoroutine);
+                }
+                dimExQueryLoading = false;
+                ToggleDimExKeyboard(false);
+            }
+
+            else if(Input.GetKeyDown(KeyCode.Return) && !keyboardLoaded)
+            {
+                ToggleDimExKeyboard(true);
+                typedWordString = "";
+            }
+
+        if (keyboardLoaded)
+        {
+            foreach (char c in Input.inputString)
+            {
+                if (c == '\b') // has backspace/delete been pressed?
+                {
+                    if (typedWordString.Length != 0)
+                    {
+                        typedWordString = typedWordString.Substring(0, typedWordString.Length - 1);
+                    }
+                }
+                else if ((c == '\n') || (c == '\r') && keyboardLoaded) // enter/return
+                {
+                    if (typedWordString.Length > 0)
+                    {
+                        if (activeQueryCoroutine != null)
+                        {
+                            StopCoroutine(activeQueryCoroutine);
+                        }
+
+                        dimExQueryLoading = true;
+                        StartCoroutine(globals.dimExplorer.ClearDimExplorer());
+
+                        activeQueryCoroutine = StartCoroutine(ViRMA_APIController.SearchHierachies(typedWordString.ToLower(), (nodes) => {
+
+                            // Populate scrollable menu
+                            StartCoroutine(scrollableQueryMenu.PopulateMenu(nodes));
+                            activeQueryCoroutine = null;
+                            dimExQueryLoading = false;
+                        }));
+
+                    }
+                }
+                else
+                {
+                    typedWordString += c;
+
+                }
+                typedWordTMP.text = typedWordString;
+            }
+        }
     }
 
 }

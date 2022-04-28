@@ -70,7 +70,6 @@ public class ViRMA_MainMenu : MonoBehaviour
         // define ViRMA globals script
         globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
-
         menuSections = new List<GameObject>();
         menuSections.Add(section_dimensionBrowser);
         menuSections.Add(section_timePicker);
@@ -121,6 +120,7 @@ public class ViRMA_MainMenu : MonoBehaviour
                 browseFilterOption.GenerateBtnDefaults(ViRMA_Colors.darkBlue, Color.white);
                 browseFilterOption.GetComponent<Button>().onClick.AddListener(() => globals.dimExplorer.dimExKeyboard.ToggleDimExKeyboard(true));
                 browseFilterOption.GetComponent<Button>().onClick.AddListener(() => ToggleMainMenu(false));
+
             }
 
             if (browseFilterOption.name == "TimeBtn")
@@ -629,8 +629,8 @@ public class ViRMA_MainMenu : MonoBehaviour
             flattenedVector.y = 0;
             flattenedVector.Normalize();
             //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * 0.5f;
-            //Vector3 spawnPos = new Vector3(0, 1, 2);
-            Vector3 spawnPos = m_CameraRig.centerEyeAnchor.localPosition + flattenedVector * 0.5f;
+            Vector3 spawnPos = new Vector3(0, 0.2f, 0.5f);
+            //Vector3 spawnPos = m_CameraRig.centerEyeAnchor.localPosition + flattenedVector * 0.5f;
 
             // save menu position if already moved
             if (mainMenuPositionSet)
@@ -645,7 +645,8 @@ public class ViRMA_MainMenu : MonoBehaviour
             }
             else
             {
-                MainMenu.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 1;
+                //MainMenu.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 1;
+                MainMenu.transform.position = new Vector3(0, 0.8f, 0.5f);
                 //transform.position = spawnPos;
                 //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
             }
@@ -760,7 +761,9 @@ public class ViRMA_MainMenu : MonoBehaviour
     {
         if (customMenuBtn.name == "RepositionBtn")
         {
-            //handInteractingWithMainMenu = customMenuBtn.GetComponent<ViRMA_UiElement>().handINteractingWithUi;
+            handInteractingWithMainMenu = customMenuBtn.GetComponent<ViRMA_UiElement>().handINteractingWithUi;
+            Debug.Log("hand interacting with ui");
+            Debug.Log(customMenuBtn.GetComponent<ViRMA_UiElement>().handINteractingWithUi);
             mainMenuMoving = true;
         }
         if (customMenuBtn.name == "TimeBackBtn")
@@ -787,6 +790,7 @@ public class ViRMA_MainMenu : MonoBehaviour
     {
         if (mainMenuMoving)
         {
+            Debug.Log("menu moving");
             if (globals.menuInteraction_Select.GetState(handInteractingWithMainMenu.handType))
             {
                 if (handInteractingWithMainMenu)

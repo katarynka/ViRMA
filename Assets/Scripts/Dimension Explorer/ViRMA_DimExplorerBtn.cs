@@ -1,9 +1,10 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Valve.VR;
 using Valve.VR.InteractionSystem;
 
-public class ViRMA_DimExplorerBtn : MonoBehaviour
+public class ViRMA_DimExplorerBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private ViRMA_GlobalsAndActions globals;
     private ViRMA_DimExplorerGroup parentDimExGrp;
@@ -41,22 +42,45 @@ public class ViRMA_DimExplorerBtn : MonoBehaviour
     }
 
     // triggers for UI drumsticks
-    private void OnTriggerEnter(Collider triggeredCol)
+    //private void OnTriggerEnter(Collider triggeredCol)
+    //{
+    //    Debug.Log("on trigger enter dim explorer button");
+    //    //if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+    //    //{
+    //        globals.dimExplorer.hoveredTagBtn = gameObject;
+    //    //}
+    //}
+    //private void OnTriggerExit(Collider triggeredCol)
+    //{
+    //    //if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+    //    //{
+    //        if (globals.dimExplorer.hoveredTagBtn == gameObject)
+    //        {
+    //            globals.dimExplorer.hoveredTagBtn = null;
+    //        }          
+    //    //}
+    //}
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        Debug.Log("on pointer enter dimexplorerbutton");
+        globals.dimExplorer.hoveredTagBtn = gameObject;
+        Debug.Log("hoveredTagBtn verification: " + globals.dimExplorer.hoveredTagBtn);
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("on pointer exit dimexplorerbutton");
+        if (globals.dimExplorer.hoveredTagBtn == gameObject)
         {
-            globals.dimExplorer.hoveredTagBtn = gameObject;
+            globals.dimExplorer.hoveredTagBtn = null;
         }
     }
-    private void OnTriggerExit(Collider triggeredCol)
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
-            if (globals.dimExplorer.hoveredTagBtn == gameObject)
-            {
-                globals.dimExplorer.hoveredTagBtn = null;
-            }          
-        }
+        Debug.Log("on pointer click dimexplorerbutton");
+        LoadDimExContextMenu();
+       
     }
 
     public void LoadDimExButton(Tag tag)
@@ -118,11 +142,13 @@ public class ViRMA_DimExplorerBtn : MonoBehaviour
                 Destroy(innerBackground);
                 innerBackground = null;
             }
-
+            Debug.Log("hoveredTagBtn");
+            Debug.Log(globals.dimExplorer.hoveredTagBtn);
             // controls appearance of button in various states
             bgRend.GetPropertyBlock(matPropBlock);
             if (globals.dimExplorer.hoveredTagBtn == gameObject || searchedForTag || contextMenuActiveOnBtn)
             {
+                Debug.Log("focused state");
                 SetFocusedState();
             }
             else if (globals.dimExplorer.activeVerticalRigidbody == parentDimExGrp.dimExRigidbody)
@@ -140,7 +166,7 @@ public class ViRMA_DimExplorerBtn : MonoBehaviour
                 SetFadedState();
             }
             bgRend.SetPropertyBlock(matPropBlock);
-        }  
+        }
     }
     public void SetDefaultState()
     {

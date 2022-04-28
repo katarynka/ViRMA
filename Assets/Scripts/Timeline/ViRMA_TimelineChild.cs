@@ -31,9 +31,12 @@ public class ViRMA_TimelineChild : MonoBehaviour
     public bool isNextBtn;
     public bool isPrevBtn;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
         childRend = GetComponent<Renderer>();
     }
     private void Start()

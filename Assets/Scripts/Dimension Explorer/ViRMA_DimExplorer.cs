@@ -40,7 +40,7 @@ public class ViRMA_DimExplorer : MonoBehaviour
         if (dimensionExpLorerLoaded)
         {
             DimExMovementLimiter();
-            DimExplorerMovement();
+            //DimExplorerMovement();
         }
     }
 
@@ -179,7 +179,8 @@ public class ViRMA_DimExplorer : MonoBehaviour
             transform.position = new Vector3(keyboardPos.x, playerHeight, keyboardPos.z);
             //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
 
-            float distanceBehind = 0.25f;
+            //float distanceBehind = 0.25f;
+            float distanceBehind = 0f;
             Vector3 newPosition = transform.position + (transform.forward * distanceBehind);
             transform.position = newPosition;
         }
@@ -294,10 +295,14 @@ public class ViRMA_DimExplorer : MonoBehaviour
 
         dimensionExpLorerLoaded = true;
     }
-    public void SubmitTagForContextMenu(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    public void SubmitTagForContextMenu()
     {
+        Debug.Log("submitTagForContextMenu");
+
+        Debug.Log("hoveredTag " + hoveredTagBtn);
         if (hoveredTagBtn != null)
         {
+            Debug.Log("hoveredTagNotNull " + hoveredTagBtn);
             GameObject submuttedTagBtn = hoveredTagBtn;
             hoveredTagBtn = null;
 
@@ -306,13 +311,18 @@ public class ViRMA_DimExplorer : MonoBehaviour
             submuttedTagBtn.GetComponent<ViRMA_DimExplorerBtn>().LoadDimExContextMenu();
         }    
     }
-    public void SubmitContextBtnForQuery(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    public void SubmitContextBtnForQuery()
     {
+        Debug.Log("SubmitContextBtnForQuery");
+        Debug.Log("hoveredFilterBtn in function verification: " + hoveredFilterBtn);
         if (hoveredFilterBtn != null)
         {
+            Debug.Log("SubmitContext: HoverbuttonNotNull " + hoveredFilterBtn);
             // grab data from context menu
             string axisQueryType = hoveredFilterBtn.GetComponent<ViRMA_DimExplorerContextMenuBtn>().axisQueryType;
+            Debug.Log("axisQueryType: " + axisQueryType);
             Tag tagQueryData = hoveredFilterBtn.GetComponent<ViRMA_DimExplorerContextMenuBtn>().tagQueryData;
+            Debug.Log("tagQueryData: " + tagQueryData);
 
             // push data to query controller
             if (axisQueryType == "filter")
@@ -335,6 +345,38 @@ public class ViRMA_DimExplorer : MonoBehaviour
             Destroy(hoveredFilterBtn.transform.parent.gameObject);
         }
     }
+
+    //JBAL KTOB ADDED METHOD
+    public void SubmitContextBtnForQuery(Tag tag, string filter)
+    {
+        Debug.Log("SubmitContextBtnForQuery");
+
+        // grab data from context menu
+        string axisQueryType = filter;
+        Debug.Log("SUBMIT: axisQueryType: " + axisQueryType);
+        Tag tagQueryData = tag;
+        Debug.Log("SUBMIT: tagQueryData: " + tagQueryData);
+
+        // push data to query controller
+        if (axisQueryType == "filter")
+            {
+                int orEnabled = -1;
+                if (globals.queryController.queryModeOrSetting)
+                {
+                    orEnabled = 0;
+                }
+                globals.queryController.buildingQuery.AddFilter(tagQueryData.Id, "node", orEnabled);
+            }
+            else
+            {
+                globals.queryController.buildingQuery.SetAxis(axisQueryType, tagQueryData.Id, "node");
+            }
+
+            // ADD CODE TO HIDE/DESTROY THE MENU
+            
+    }
+
+
     public void ToggleDimExFade(bool toFade)
     {
         toFade = !toFade;

@@ -25,9 +25,19 @@ public class ViRMA_RollUpPoint : MonoBehaviour
     public string parentAxisLabel;
     public int parentChildrenCount;
 
+    public OVRCameraRig m_CameraRig;
+
+    private ViRMA_VizController visualizationController;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+        // JBAL KTOB - CHANGE TO OVRCAMERARIG IN THE FUTURE - SELF NOTE
+        //globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        GameObject vizGameObject = GameObject.Find("VisualisationController");
+        visualizationController = vizGameObject.GetComponent<ViRMA_VizController>();
 
         gameObject.AddComponent<BoxCollider>();
         Destroy(GetComponent<SphereCollider>());
@@ -101,48 +111,42 @@ public class ViRMA_RollUpPoint : MonoBehaviour
 
             transform.localScale = Vector3.one * 1.1f;
 
-            globals.vizController.focusedAxisPoint = gameObject;
+            visualizationController.focusedAxisPoint = gameObject;
 
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
+           // globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
         }
     }
 
     private void OnTriggerStay(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+
+        if (parentSet)
         {
-            if (parentSet)
+            if (x)
             {
-                if (x)
-                {
-                    axisLabelText.text = parentAxisLabel + " (" + parentChildrenCount + ") <b>↑</b>";
-                }
-                else
-                {
-                    axisLabelText.text = "<b>↑</b> " + " (" + parentChildrenCount + ") " + parentAxisLabel;
-                }
+                axisLabelText.text = parentAxisLabel + " (" + parentChildrenCount + ") <b>↑</b>";
             }
-
-            transform.localScale = Vector3.one * 1.1f;
-
-            globals.vizController.focusedAxisPoint = gameObject;
-
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
+            else
+            {
+                axisLabelText.text = "<b>↑</b> " + " (" + parentChildrenCount + ") " + parentAxisLabel;
+            }
         }
+
+        transform.localScale = Vector3.one * 1.1f;
+
+        visualizationController.focusedAxisPoint = gameObject;
+
     }
 
     private void OnTriggerExit(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
+
             axisLabelText.text = axisLabel;
 
             transform.localScale = Vector3.one;
 
-            globals.vizController.focusedAxisPoint = null;
+            visualizationController.focusedAxisPoint = null;
 
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, false);
-        }
     }
 
     private void LoadRollUpLabelAndCollider()

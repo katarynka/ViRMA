@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Valve.VR.InteractionSystem;
 
-public class ViRMA_DimExplorerGroup : MonoBehaviour
+public class ViRMA_DimExplorerGroup : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private ViRMA_GlobalsAndActions globals;
     private GameObject dimExBtnPrefab;
@@ -63,19 +64,34 @@ public class ViRMA_DimExplorerGroup : MonoBehaviour
     // triggers for UI drumsticks
     private void OnTriggerEnter(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
+        //if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        //{
             globals.dimExplorer.activeVerticalRigidbody = dimExRigidbody;
-        }
+        //}
     }
     private void OnTriggerExit(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
+        //if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        //{
             if (globals.dimExplorer.activeVerticalRigidbody == dimExRigidbody)
             {
                 globals.dimExplorer.activeVerticalRigidbody = null;
             }         
+        //}
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        Debug.Log("on pointer enter dimexplorergroup");
+        globals.dimExplorer.activeVerticalRigidbody = dimExRigidbody;
+        Debug.Log(globals.dimExplorer.activeVerticalRigidbody);
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("on pointer exit dimexplorergroup");
+        if (globals.dimExplorer.activeVerticalRigidbody == dimExRigidbody)
+        {
+            globals.dimExplorer.activeVerticalRigidbody = null;
         }
     }
 
@@ -205,21 +221,21 @@ public class ViRMA_DimExplorerGroup : MonoBehaviour
     }
     private void DimExGroupMovementLimiter()
     {
-        if (Player.instance)
+        if (m_CameraRig)
         {
             if (topMostChild != null && bottomMostChild != null)
             {
                 Vector3 adjustVelocity = dimExRigidbody.velocity;
 
                 // prevent dim ex group from vertically scrolling too far down
-                if (topMostChild.position.y <= Player.instance.eyeHeight && adjustVelocity.y < 0)
+                if (topMostChild.position.y <= m_CameraRig.centerEyeAnchor.localPosition.y && adjustVelocity.y < 0)
                 {
                     adjustVelocity.y = 0;
                     dimExRigidbody.velocity = adjustVelocity;
                 }
 
                 // prevent dim ex group from vertically scrolling too far up
-                if (bottomMostChild.position.y >= Player.instance.eyeHeight && adjustVelocity.y > 0)
+                if (bottomMostChild.position.y >= m_CameraRig.centerEyeAnchor.localPosition.y && adjustVelocity.y > 0)
                 {
                     adjustVelocity.y = 0;
                     dimExRigidbody.velocity = adjustVelocity;

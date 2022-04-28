@@ -113,7 +113,7 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
 
 
         // SteamVR controller models take some frames to load so this waits for them to set some globals
-        //InitialiseSteamVRControllers();
+        InitialiseSteamVRControllers();
 
         //// control activation of SteamVR actions
         //ActionActivityController();
@@ -170,13 +170,13 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
         menuInteraction_MenuControl[SteamVR_Input_Sources.Any].onStateDown += mainMenu.ToggleMainMenuAlias;
 
         // viz controller
-        vizNav_Select[SteamVR_Input_Sources.Any].onStateDown += vizController.SubmitCellForTimeline;
-        vizNav_Select[SteamVR_Input_Sources.Any].onStateDown += vizController.DrillDownRollUp;
+        //vizNav_Select[SteamVR_Input_Sources.Any].onStateDown += vizController.SubmitCellForTimeline;
+        //vizNav_Select[SteamVR_Input_Sources.Any].onStateDown += vizController.DrillDownRollUp;
         
         // dimension explorer 
         dimExplorer_Scroll[SteamVR_Input_Sources.Any].onStateDown += dimExplorer.SubmitTagForTraversal;
-        dimExplorer_Select[SteamVR_Input_Sources.Any].onStateDown += dimExplorer.SubmitTagForContextMenu;
-        dimExplorer_Select[SteamVR_Input_Sources.Any].onStateDown += dimExplorer.SubmitContextBtnForQuery;
+        //dimExplorer_Select[SteamVR_Input_Sources.Any].onStateDown += dimExplorer.SubmitTagForContextMenu;
+        //dimExplorer_Select[SteamVR_Input_Sources.Any].onStateDown += dimExplorer.SubmitContextBtnForQuery;
 
         //timeline explorer 
         timeline_Select[SteamVR_Input_Sources.Any].onStateDown += timeline.SubmitChildForContextMenu;
@@ -267,70 +267,22 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
     // controller appearance
     public void InitialiseSteamVRControllers()
     {
-        GameObject drumstickPrefab = Resources.Load("Prefabs/Drumstick") as GameObject;
+        GameObject drumstickPrefab = GameObject.Find("PokeLocation").gameObject;
 
-        // right controller
-        if (!rightControllerLoaded)
-        {
-            if (Player.instance.rightHand.mainRenderModel)
-            {
-                if (Player.instance.rightHand.mainRenderModel.transform.Find("controller(Clone)"))
-                {
-                    GameObject controller = Player.instance.rightHand.mainRenderModel.transform.Find("controller(Clone)").gameObject;
-                    if (controller.transform.Find("body"))
-                    {
-                        // set controller initial appearance
-                        rightControllerLoaded = true;
-                        Player.instance.rightHand.HideSkeleton();
-                        Player.instance.rightHand.ShowController();
 
-                        // save copy of material for fade in and out later
-                        GameObject steamVRControllerBody = Player.instance.rightHand.mainRenderModel.transform.Find("controller(Clone)").Find("body").gameObject;
-                        Renderer controllerRend = steamVRControllerBody.GetComponent<Renderer>();
-                        rightControllerNormalMaterial = new Material(controllerRend.material);
+        OVRInput.Controller controller = OVRInput.Controller.RTouch;
 
-                        // add 'drumstick' to controller for Ui interaction
-                        GameObject drumstick = Instantiate(drumstickPrefab, controller.transform);                  
-                        drumstick.transform.localPosition = new Vector3(0, 0, 0.04f);
-                        drumstick.GetComponent<ViRMA_Drumstick>().hand = Player.instance.rightHand;
-                        drumstick.name = "RightHandDrumstick";
-                        Player.instance.rightHand.gameObject.GetComponent<ViRMA_Hand>().drumstick = drumstick;
-                    }
-                }
-            }
-        }
 
-        // left controller
-        if (!leftControllerLoaded)
-        {
-            if (Player.instance.leftHand.mainRenderModel)
-            {
-                if (Player.instance.leftHand.mainRenderModel.transform.Find("controller(Clone)"))
-                {
-                    GameObject controller = Player.instance.leftHand.mainRenderModel.transform.Find("controller(Clone)").gameObject;
-                    if (controller.transform.Find("body"))
-                    {
-                        // set controller initial appearance
-                        leftControllerLoaded = true;
-                        Player.instance.leftHand.HideSkeleton();
-                        Player.instance.leftHand.ShowController();
+        // add 'drumstick' to controller for Ui interaction
+        GameObject drumstick = GameObject.Find("PokeLocation").gameObject;
+        drumstick.transform.localPosition = new Vector3(0, 0, 0.04f);
+        //drumstick.GetComponent<ViRMA_Drumstick>().hand = Player.instance.rightHand;
+        drumstick.name = "RightHandDrumstick";
+        //Player.instance.rightHand.gameObject.GetComponent<ViRMA_Hand>().drumstick = drumstick;
 
-                        // save copy of material for fade in and out later
-                        GameObject steamVRControllerBody = Player.instance.leftHand.mainRenderModel.transform.Find("controller(Clone)").Find("body").gameObject;
-                        Renderer controllerRend = steamVRControllerBody.GetComponent<Renderer>();
-                        leftControllerNormalMaterial = new Material(controllerRend.material);
-
-                        // add 'drumstick' to controller for Ui interaction
-                        GameObject drumstick = Instantiate(drumstickPrefab, controller.transform);
-                        drumstick.transform.localPosition = new Vector3(0, 0, 0.04f);
-                        drumstick.GetComponent<ViRMA_Drumstick>().hand = Player.instance.leftHand;
-                        drumstick.name = "LeftHandDrumstick";
-                        Player.instance.leftHand.gameObject.GetComponent<ViRMA_Hand>().drumstick = drumstick;
-                    }
-                }
-            }
-        }
     }
+
+
     public void ToggleControllerFade(Hand hand, bool toFade)
     {
         if (hand.mainRenderModel)

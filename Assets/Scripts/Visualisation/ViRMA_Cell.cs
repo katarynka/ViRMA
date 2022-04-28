@@ -15,11 +15,17 @@ public class ViRMA_Cell : MonoBehaviour
     public MaterialPropertyBlock cellRendPropBlock;
 
     public OVRCameraRig m_CameraRig;
+    public GameObject pokeLocation;
+    public Collider pokeLocationCollider;
+    private ViRMA_VizController visualizationController;
 
     private void Awake()
     {
         m_CameraRig = FindObjectOfType<OVRCameraRig>();
         globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+
+        GameObject vizGameObject = GameObject.Find("VisualisationController");
+        visualizationController = vizGameObject.GetComponent<ViRMA_VizController>();
 
         thisCellRend = GetComponent<Renderer>();
         thisCellMesh = GetComponent<MeshFilter>().mesh;
@@ -28,6 +34,7 @@ public class ViRMA_Cell : MonoBehaviour
     }
     private void Start()
     {
+
         if (thisCellData.Filtered)
         {
             // destroy the cell gameobject if the result has been filtered
@@ -41,6 +48,12 @@ public class ViRMA_Cell : MonoBehaviour
             // use id to only show relevant image on the mesh from the material texture array
             SetTextureFromArray(thisCellData.TextureArrayId);
         }
+
+        //pokeLocation = GameObject.Find("PokeLocation");
+        //Debug.Log(pokeLocation + " pokeguy");
+        //pokeLocationCollider = pokeLocation.GetComponent<SphereCollider>();
+        //Debug.Log(pokeLocationCollider + "COLLIDER TRUE");
+
     }
     private void Update()
     {
@@ -49,48 +62,39 @@ public class ViRMA_Cell : MonoBehaviour
 
     private void OnTriggerEnter(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
-            globals.vizController.focusedCell = gameObject;
+        //globals.vizController.focusedCell = gameObject;
+        visualizationController.focusedCell = gameObject;
 
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
-        }
+        //globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
+
     }
 
     private void OnTriggerStay(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
-            globals.vizController.focusedCell = gameObject;
-
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
-        }
+        //globals.vizController.focusedCell = gameObject;
+        visualizationController.focusedCell = gameObject;
     }
 
     private void OnTriggerExit(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
-            if (globals.vizController.focusedCell == gameObject)
+            if (visualizationController.focusedCell == gameObject)
             {
-                globals.vizController.focusedCell = null;
-
-                globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, false);
+                //globals.vizController.focusedCell = null;
+                visualizationController.focusedCell = null;
             }
-        }
     }
 
     // update
     private void CellStateController()
     {
-        if (globals.vizController.focusedCell == null)
+        if (visualizationController.focusedCell == null)
         {
             ToggleFade(false);
             ToggleAxesLabels(false);
         }
         else
         {
-            if (globals.vizController.focusedCell == gameObject)
+            if (visualizationController.focusedCell == gameObject)
             {
                 ToggleFade(false);
                 ToggleAxesLabels(true);
@@ -229,14 +233,14 @@ public class ViRMA_Cell : MonoBehaviour
                 axesLabels.transform.SetParent(transform.parent.transform);
                 axesLabels.transform.localScale = Vector3.one * 0.3f;
                 axesLabels.transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + 3f, transform.localPosition.z);
-                axesLabels.transform.LookAt(2 * axesLabels.transform.position - Player.instance.hmdTransform.position);
-
+                axesLabels.transform.LookAt(2 * axesLabels.transform.position - Camera.main.transform.TransformPoint(Vector3.forward * 0.5f));
+                axesLabels.transform.rotation = Camera.main.transform.rotation;
                 // x part
                 string xAxisPointLabel = "";
                 int xAxisPointIndex = (int)thisCellData.Coordinates.x;
-                if (globals.vizController.axisXPointObjs.Count > 1)
+                if (visualizationController.axisXPointObjs.Count > 1)
                 {
-                    GameObject xAxisPointObj = globals.vizController.axisXPointObjs[xAxisPointIndex];
+                    GameObject xAxisPointObj = visualizationController.axisXPointObjs[xAxisPointIndex];
                     xAxisPointLabel = xAxisPointObj.GetComponent<ViRMA_AxisPoint>().axisPointLabel;
                 }
                 axesLabels.transform.GetChild(0).GetComponent<TextMeshPro>().text = xAxisPointLabel;
@@ -245,9 +249,9 @@ public class ViRMA_Cell : MonoBehaviour
                 // y part
                 string yAxisPointLabel = "";
                 int yAxisPointIndex = (int)thisCellData.Coordinates.y;
-                if (globals.vizController.axisYPointObjs.Count > 1)
+                if (visualizationController.axisYPointObjs.Count > 1)
                 {
-                    GameObject yAxisPointObj = globals.vizController.axisYPointObjs[yAxisPointIndex];
+                    GameObject yAxisPointObj = visualizationController.axisYPointObjs[yAxisPointIndex];
                     yAxisPointLabel = yAxisPointObj.GetComponent<ViRMA_AxisPoint>().axisPointLabel;
                 }
                 axesLabels.transform.GetChild(1).GetComponent<TextMeshPro>().text = yAxisPointLabel;
@@ -256,9 +260,9 @@ public class ViRMA_Cell : MonoBehaviour
                 // z part
                 string zAxisPointLabel = "";
                 int zAxisPointIndex = (int)thisCellData.Coordinates.z;     
-                if (globals.vizController.axisZPointObjs.Count > 1)
+                if (visualizationController.axisZPointObjs.Count > 1)
                 {
-                    GameObject zAxisPointObj = globals.vizController.axisZPointObjs[zAxisPointIndex];
+                    GameObject zAxisPointObj = visualizationController.axisZPointObjs[zAxisPointIndex];
                     zAxisPointLabel = zAxisPointObj.GetComponent<ViRMA_AxisPoint>().axisPointLabel;
                 }
                 axesLabels.transform.GetChild(2).GetComponent<TextMeshPro>().text = zAxisPointLabel;
@@ -283,12 +287,12 @@ public class ViRMA_Cell : MonoBehaviour
 
         globals.ToggleControllerFade(hand, true);
 
-        //globals.vizController.focusedCell = gameObject;
+        //visualizationController.focusedCell = gameObject;
         ToggleAxesLabels(true);
 
-        if (globals.vizController.cellObjs.Count > 0)
+        if (visualizationController.cellObjs.Count > 0)
         {
-            foreach (GameObject cell in globals.vizController.cellObjs)
+            foreach (GameObject cell in visualizationController.cellObjs)
             {
                 if (cell != gameObject)
                 {
@@ -303,12 +307,12 @@ public class ViRMA_Cell : MonoBehaviour
 
         globals.ToggleControllerFade(hand, false);
 
-        //globals.vizController.focusedCell = globals.vizController.axisXPointObjs[0];
+        //visualizationController.focusedCell = visualizationController.axisXPointObjs[0];
         ToggleAxesLabels(false);
 
-        if (globals.vizController.cellObjs.Count > 0)
+        if (visualizationController.cellObjs.Count > 0)
         {
-            foreach (GameObject cell in globals.vizController.cellObjs)
+            foreach (GameObject cell in visualizationController.cellObjs)
             {
                 if (cell != gameObject)
                 {
@@ -324,11 +328,11 @@ public class ViRMA_Cell : MonoBehaviour
 
         globals.ToggleControllerFade(hand, true);
 
-        globals.vizController.focusedCell = gameObject;
+        visualizationController.focusedCell = gameObject;
 
-        if (globals.vizController.cellObjs.Count > 0)
+        if (visualizationController.cellObjs.Count > 0)
         {
-            foreach (GameObject cell in globals.vizController.cellObjs)
+            foreach (GameObject cell in visualizationController.cellObjs)
             {
                 if (cell != gameObject)
                 {
@@ -343,11 +347,11 @@ public class ViRMA_Cell : MonoBehaviour
 
         globals.ToggleControllerFade(hand, false);
 
-        globals.vizController.focusedCell = globals.vizController.axisXPointObjs[0];
+        visualizationController.focusedCell = visualizationController.axisXPointObjs[0];
 
-        if (globals.vizController.cellObjs.Count > 0)
+        if (visualizationController.cellObjs.Count > 0)
         {
-            foreach (GameObject cell in globals.vizController.cellObjs)
+            foreach (GameObject cell in visualizationController.cellObjs)
             {
                 if (cell != gameObject)
                 {

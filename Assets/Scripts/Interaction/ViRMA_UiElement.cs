@@ -78,7 +78,6 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private void Update()
     {
 		handINteractingWithUi = currentHand;
-
 		// override all button stats when button is faded
 		BtnFadeController();
 
@@ -91,6 +90,8 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	{
 		// assign howevered hand as current hand
 		currentHand = hand;
+		Debug.Log("assigning current hand on hand hover");
+		Debug.Log(hand);
 
 		// trigger button initial hover state
 		ViRMA_InputModule.instance.HoverBegin(gameObject);
@@ -141,10 +142,13 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	// --- custom interaction states for pointer and SteamVR hand --- \\
     public void OnPointerEnter(PointerEventData eventData)
     {
+		Debug.Log("UIElement OnPointerEnter");
 		SetBtnHighlightState();
+		globals.dimExplorer.dimExKeyboard.ToggleDimExKeyboard(true);
 	}
     public void OnPointerExit(PointerEventData eventData)
     {
+		Debug.Log("UIElement OnPointerExit");
 		SetBtnNormalState();
 	}
     public void OnPointerUp(PointerEventData eventData)
@@ -154,11 +158,11 @@ public class ViRMA_UiElement : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	public void OnPointerDown(PointerEventData eventData)
 	{
 		SetBtnDownState();
+		Debug.Log("UIElement OnPointerDownWithTheSickness");
 	}
 	public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("what was clicked");
-		Debug.Log(eventData);
 		Debug.Log(gameObject);
         
         SetBtnNormalState();

@@ -29,13 +29,19 @@ public class ViRMA_AxisPoint : MonoBehaviour
     public int axisPointId;
 
     public int axisPointChildrenCount;
+    public OVRCameraRig m_CameraRig;
+    private ViRMA_VizController visualizationController;
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
         axisPointRigidbody = gameObject.AddComponent<Rigidbody>();
         axisPointRigidbody.isKinematic = true;
         axisPointRigidbody.useGravity = false;
+
+        GameObject vizGameObject = GameObject.Find("VisualisationController");
+        visualizationController = vizGameObject.GetComponent<ViRMA_VizController>();
 
         axisPointRend = GetComponent<MeshRenderer>();
         axisPointRendPropBlock = new MaterialPropertyBlock();
@@ -88,70 +94,65 @@ public class ViRMA_AxisPoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        
+        CheckForChildren();
+
+        if (childrenSet && axisPointChildrenCount > 0)
         {
-            CheckForChildren();
-
-            if (childrenSet && axisPointChildrenCount > 0)
+            if (x)
             {
-                if (x)
-                {
-                    axisPointLabelText.text = axisPointLabel + " (" + axisPointChildrenCount + ") <b>↓</b>";
-                }
-                else
-                {
-                    axisPointLabelText.text = "<b>↓</b>" + " (" + axisPointChildrenCount + ") " + axisPointLabel;
-                }
+                axisPointLabelText.text = axisPointLabel + " (" + axisPointChildrenCount + ") <b>↓</b>";
             }
-
-            globals.vizController.focusedAxisPoint = gameObject;
-
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
+            else
+            {
+                axisPointLabelText.text = "<b>↓</b>" + " (" + axisPointChildrenCount + ") " + axisPointLabel;
+            }
         }
+
+        visualizationController.focusedAxisPoint = gameObject;
+
+        //globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
+    
     }
 
     private void OnTriggerStay(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+       
+        if (childrenSet && axisPointChildrenCount > 0)
         {
-            if (childrenSet && axisPointChildrenCount > 0)
+            if (x)
             {
-                if (x)
-                {
-                    axisPointLabelText.text = axisPointLabel + " (" + axisPointChildrenCount + ") <b>↓</b>";
-                }
-                else
-                {
-                    axisPointLabelText.text = "<b>↓</b>" + " (" + axisPointChildrenCount + ") " + axisPointLabel;
-                }
+                axisPointLabelText.text = axisPointLabel + " (" + axisPointChildrenCount + ") <b>↓</b>";
             }
-
-            globals.vizController.focusedAxisPoint = gameObject;
-
-            globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, true);
+            else
+            {
+                axisPointLabelText.text = "<b>↓</b>" + " (" + axisPointChildrenCount + ") " + axisPointLabel;
+            }
         }
+
+        visualizationController.focusedAxisPoint = gameObject;
+
     }
 
     private void OnTriggerExit(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+       
+        axisPointLabelText.text = axisPointLabel;
+
+        if (visualizationController.focusedAxisPoint == gameObject)
         {
-            axisPointLabelText.text = axisPointLabel;
+            visualizationController.focusedAxisPoint = null;
 
-            if (globals.vizController.focusedAxisPoint == gameObject)
-            {
-                globals.vizController.focusedAxisPoint = null;
-
-                globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, false);
-            }
+            //globals.ToggleControllerFade(triggeredCol.GetComponent<ViRMA_Drumstick>().hand, false);
         }
+
     }
 
     private void AxisPointStateController()
     {
-        if (globals.vizController.focusedAxisPoint)
+        if (visualizationController.focusedAxisPoint)
         {
-            if (globals.vizController.focusedAxisPoint == gameObject)
+            if (visualizationController.focusedAxisPoint == gameObject)
             {
                 transform.localScale = Vector3.one * 0.65f;
                 ToggleFade(false);
@@ -190,17 +191,17 @@ public class ViRMA_AxisPoint : MonoBehaviour
             if (!axisPointFaded)
             {
                 int fadeChecker = 0;
-                if (globals.vizController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>())
+                if (visualizationController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>())
                 {
-                    if (x && globals.vizController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>().x)
+                    if (x && visualizationController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>().x)
                     {
                         fadeChecker++;
                     }
-                    else if (y && globals.vizController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>().y)
+                    else if (y && visualizationController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>().y)
                     {
                         fadeChecker++;
                     }
-                    else if (z && globals.vizController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>().z)
+                    else if (z && visualizationController.focusedAxisPoint.GetComponent<ViRMA_AxisPoint>().z)
                     {
                         fadeChecker++;
                     }
@@ -255,11 +256,11 @@ public class ViRMA_AxisPoint : MonoBehaviour
     private void MoveAxesToFocusedCell()
     {
         //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
-        //globals.vizController.gameObject.GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
+        //visualizationController.gameObject.GetComponent<Rigidbody>().centerOfMass = Vector3.zero;
 
-        if (globals.vizController.focusedCell)
+        if (visualizationController.focusedCell)
         {
-            GameObject targetCell = globals.vizController.focusedCell;
+            GameObject targetCell = visualizationController.focusedCell;
             Vector3 targetPosition = targetCell.transform.localPosition;
             if (x)
             {

@@ -7,6 +7,9 @@ using System;
 using System.Threading;
 using System.Linq;
 
+// JBAL KTOB ADDED
+using UnityEngine.UI;
+
 public class Tag
 {
     public int Id { get; set; }
@@ -64,17 +67,21 @@ public class Query
     }
     public void SetAxis(string axis, int id, string type)
     {
+        Debug.Log("SetAxis: Line 70 APIController Axis, ID, Type:" + axis + " " + id + " " + type);
         if (axis.ToUpper() == "X")
         {
             X = new Axis(id, type);
+            Debug.Log("SetAxis: X APIController: " + X);
         }
         else if (axis.ToUpper() == "Y")
         {
             Y = new Axis(id, type);
+            Debug.Log("SetAxis: X APIController: " + Y);
         }
         else if (axis.ToUpper() == "Z")
         {
             Z = new Axis(id, type);
+            Debug.Log("SetAxis: X APIController: " + Z);
         }
         else
         {
@@ -83,6 +90,7 @@ public class Query
     }
     public void ClearAxis(string axis, bool hardCLear = false)
     {
+        Debug.Log("ClearAxis: Line 90 APIController");
         if (axis.ToUpper() == "X")
         {
             if (X != null)
@@ -359,7 +367,8 @@ public class ViRMA_APIController : MonoBehaviour
     //public static string imagesDirectory = System.IO.Directory.GetCurrentDirectory().ToString() + "/../LSC2021/";
     //public static string imagesDirectory = "D:/Downloads/LSC2021NoJpg/LSC2021/";
 
-    public static string imagesDirectory = "H:/LSC2021/";
+    public static string imagesDirectory = "D:/Downloads/LSC2021_UnityVersion/LSC2021/";
+    //public ViRMA_SearchTagsScrollableMenu scrollableMenu = GameObject.FindWithTag(ScrollableUnityCanvas).GetComponent<ViRMA_SearchTagsScrollableMenu>();
 
     // private
     private static JSONNode jsonData;
@@ -573,11 +582,18 @@ public class ViRMA_APIController : MonoBehaviour
         {
             jsonData = response;
         });
+        Debug.Log("SEARCH");
 
         int limitCounter = 0;
         List<Tag> nodes = new List<Tag>();
+
+        //jbal ktob added code - create list only of search result elements
+        List<Tag> searchResultNodes = new List<Tag>();
+        // end added code
+
         foreach (var obj in jsonData)
         {
+            Debug.Log(obj);
             if (limitCounter > 30)
             {
                 Debug.Log("Too many results. Limiting to top 30.");
@@ -627,10 +643,14 @@ public class ViRMA_APIController : MonoBehaviour
             }
 
             nodes.Add(newTag);
+            searchResultNodes.Add(newTag);
 
             limitCounter++;
         }
 
+
+
+        // Getting children and siblings
         foreach (var node in nodes)
         {
             // get children         
@@ -691,11 +711,16 @@ public class ViRMA_APIController : MonoBehaviour
             }
         }
 
-        // Debug.Log(nodes.Count + " dimension results found!"); // testing
+
+        // JBAL & KTOB - list sorted by label and not ID
+        List<Tag> sortedList = searchResultNodes.OrderBy(o => o.Label).ToList();
 
         List<Tag> orderedNodes = nodes.OrderBy(s => s.Id).ToList();
-        onSuccess(orderedNodes);
+        onSuccess(sortedList);
+        Debug.Log("ordered nodes");
     }
+
+
     public static IEnumerator GetHierarchyTag(int targetId, Action<Tag> onSuccess)
     {
         yield return GetRequest("node/" + targetId.ToString(), (response) =>

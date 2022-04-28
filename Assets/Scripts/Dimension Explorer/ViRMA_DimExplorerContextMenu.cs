@@ -6,9 +6,12 @@ public class ViRMA_DimExplorerContextMenu : MonoBehaviour
     private ViRMA_GlobalsAndActions globals;
     public Tag tagData;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
     }
 
     private void Start()

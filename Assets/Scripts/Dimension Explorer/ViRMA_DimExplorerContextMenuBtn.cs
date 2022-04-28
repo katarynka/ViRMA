@@ -1,8 +1,9 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Valve.VR.InteractionSystem;
 
-public class ViRMA_DimExplorerContextMenuBtn : MonoBehaviour
+public class ViRMA_DimExplorerContextMenuBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private ViRMA_GlobalsAndActions globals;
 
@@ -19,12 +20,20 @@ public class ViRMA_DimExplorerContextMenuBtn : MonoBehaviour
     public Tag tagQueryData;
     public string axisQueryType;
 
+    public OVRCameraRig m_CameraRig;
+
+    public ViRMA_DimExplorer dimExplorer;
+
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
         outerBgPropBlock = new MaterialPropertyBlock();
         innerBgPropBlock = new MaterialPropertyBlock();
+
+        dimExplorer = GameObject.Find("DimensionExplorer").GetComponent<ViRMA_DimExplorer>();
+        Debug.Log(dimExplorer + "dimExplorerNullTest");
     }
 
     public void LoadDimExContextMenuBtn(string axisType)
@@ -64,35 +73,66 @@ public class ViRMA_DimExplorerContextMenuBtn : MonoBehaviour
         innerBgRend.SetPropertyBlock(innerBgPropBlock);
     }
 
-    private void OnTriggerEnter(Collider triggeredCol)
+    //private void OnTriggerEnter(Collider triggeredCol)
+    //{
+    //    //if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+    //    //{
+    //        globals.dimExplorer.hoveredFilterBtn = gameObject;
+
+    //        innerBgRend.GetPropertyBlock(innerBgPropBlock);
+    //        innerBgPropBlock.SetColor("_Color", Color.white);
+    //        innerBgRend.SetPropertyBlock(innerBgPropBlock);
+
+    //        textMesh.color = activeColor;      
+    //    //}
+    //}
+    //private void OnTriggerExit(Collider triggeredCol)
+    //{
+    //    //if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+    //    //{
+    //        if (globals.dimExplorer.hoveredFilterBtn == gameObject)
+    //        {
+    //            globals.dimExplorer.hoveredFilterBtn = null;
+    //        }
+
+    //        innerBgRend.GetPropertyBlock(innerBgPropBlock);
+    //        innerBgPropBlock.SetColor("_Color", activeColor);
+    //        innerBgRend.SetPropertyBlock(innerBgPropBlock);
+
+    //        textMesh.color = Color.white;            
+    //    //}
+    //}
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
-        {
-            globals.dimExplorer.hoveredFilterBtn = gameObject;
+        Debug.Log("on pointer enter dimexplorercontextmenubutton");
+        globals.dimExplorer.hoveredFilterBtn = gameObject;
 
-            innerBgRend.GetPropertyBlock(innerBgPropBlock);
-            innerBgPropBlock.SetColor("_Color", Color.white);
-            innerBgRend.SetPropertyBlock(innerBgPropBlock);
+        innerBgRend.GetPropertyBlock(innerBgPropBlock);
+        innerBgPropBlock.SetColor("_Color", Color.white);
+        innerBgRend.SetPropertyBlock(innerBgPropBlock);
 
-            textMesh.color = activeColor;      
-        }
+        textMesh.color = activeColor;
     }
-    private void OnTriggerExit(Collider triggeredCol)
+    public void OnPointerExit(PointerEventData eventData)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        Debug.Log("on pointer exit dimexplorercontextmenubutton");
+        if (globals.dimExplorer.hoveredFilterBtn == gameObject)
         {
-            if (globals.dimExplorer.hoveredFilterBtn == gameObject)
-            {
-                globals.dimExplorer.hoveredFilterBtn = null;
-            }
-
-            innerBgRend.GetPropertyBlock(innerBgPropBlock);
-            innerBgPropBlock.SetColor("_Color", activeColor);
-            innerBgRend.SetPropertyBlock(innerBgPropBlock);
-
-            textMesh.color = Color.white;            
+            globals.dimExplorer.hoveredFilterBtn = null;
         }
+
+        innerBgRend.GetPropertyBlock(innerBgPropBlock);
+        innerBgPropBlock.SetColor("_Color", activeColor);
+        innerBgRend.SetPropertyBlock(innerBgPropBlock);
+
+        textMesh.color = Color.white;
     }
 
-    
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("project to axis " + gameObject);
+        dimExplorer.SubmitContextBtnForQuery();
+    }
+
 }

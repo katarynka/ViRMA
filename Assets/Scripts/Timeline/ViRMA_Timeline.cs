@@ -53,10 +53,16 @@ public class ViRMA_Timeline : MonoBehaviour
     public bool isContextTimeline;
 
     private GameObject feedback;
+    public OVRCameraRig m_CameraRig;
+
+    private Vector2 thumbstickAxes;
+    private float triggerAxis;
 
     private void Awake()
     {
-        globals = GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+
         timelineRb = GetComponent<Rigidbody>();
         timelineLoaded = false;
 
@@ -65,9 +71,10 @@ public class ViRMA_Timeline : MonoBehaviour
 
         timelineScale = 0.3f; // global scale of timeline
         childRelativeSpacing = 0.25f; // % width of the child to space by
-        timelinePositionDistance = 0.6f; // how far away to place the timeline in front of user
+        timelinePositionDistance = 0.03f; // how far away to place the timeline in front of user
         resultsRenderSize = 100; // max results to render at a time
         contextTimelineTimespan = 60; // number of minutes on each side of target for context timeline
+        Debug.Log("ViRMA_Timeline.cs - Awake()");
     }
     private void Start()
     {
@@ -76,9 +83,14 @@ public class ViRMA_Timeline : MonoBehaviour
     }
     private void Update()
     {
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && OVRInput.GetActiveController() == OVRInput.Controller.Touch)
+        {
+            thumbstickAxes = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+            triggerAxis = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger);
+        }
         if (timelineLoaded)
         {
-            TimelineMovement();
+            TimelineMovementOculus();
 
             TimelineMovementLimiter();
         }
@@ -113,6 +125,26 @@ public class ViRMA_Timeline : MonoBehaviour
             timelineRb.velocity = Vector3.zero;
         }
     }
+
+    // JBAL KTOB
+    private void TimelineMovementOculus()
+    {
+        if (thumbstickAxes.x < -0.5)
+        {
+            float movementRate = 0.02f;
+            Vector3 newPosition = new Vector3(transform.position.x - movementRate, transform.position.y, transform.position.z);
+            transform.position = newPosition;
+        }
+
+        if (thumbstickAxes.x > 0.5)
+        {
+            float movementRate = 0.02f;
+            Vector3 newPosition = new Vector3(transform.position.x + movementRate, transform.position.y, transform.position.z);
+            transform.position = newPosition;
+        }
+
+    }
+
     private void TimelineMovementLimiter()
     {
         if (Player.instance)
@@ -175,7 +207,8 @@ public class ViRMA_Timeline : MonoBehaviour
 
     // general
     public void ClearTimeline(bool hardReset = false)
-    {        
+    {
+        Debug.Log("TIMELINEEXECUTED - ClearTimeLine START");
         // flad as timeline as unloaded
         timelineLoaded = false;
 
@@ -208,24 +241,24 @@ public class ViRMA_Timeline : MonoBehaviour
             activeTimelinePosition = Vector3.one * Mathf.Infinity;
             activeTImelineRotation = Quaternion.identity;
         }
+        Debug.Log("TIMELINEEXECUTED - ClearTimeLine END");
     }
     private void PositionTimeline(int newSectionIndex)
     {
         // if this is the first time positioning the timeline, pick a space in front of the user, otherwise use the active position and rotation
         if (activeTimelinePosition == Vector3.one * Mathf.Infinity || activeTImelineRotation == Quaternion.identity)
         {
-            float distance = timelinePositionDistance;
-            Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
-            flattenedVector.y = 0;
-            flattenedVector.Normalize();
-            transform.position = Player.instance.hmdTransform.position + (flattenedVector * distance);
-            transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position);
+            // JBAL KTOB spawn timeline in front of the camera
+            transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.6f);
+            transform.rotation = Camera.main.transform.rotation;
 
             activeTimelinePosition = transform.position;
             activeTImelineRotation = transform.rotation;
+            Debug.Log("ViRMA_Timeline.cs - position timeline");
         }
         else
         {
+            Debug.Log("ViRMA_Timeline.cs - position timeline (else statement)");
             transform.position = activeTimelinePosition;
             transform.rotation = activeTImelineRotation;
         }
@@ -354,8 +387,9 @@ public class ViRMA_Timeline : MonoBehaviour
     }
     private void LoadTimelineSection(int sectionIndex, int totalSections)
     {
+        Debug.Log("TIMELINEEXECUTED - LoadTimelineSection");
         // hide main menu and viz
-        globals.mainMenu.ToggleMainMenu(false);
+        //globals.mainMenu.ToggleMainMenu(false);
         globals.vizController.HideViz(true);
 
         // clear old timeline if one exists
@@ -383,21 +417,24 @@ public class ViRMA_Timeline : MonoBehaviour
         {
             resultsToShow = loadedTimelineResults.Count - startIndex;
         }
-
+        Debug.Log("TIMELINEEXECUTED - LoadTimelineSection MIDDLE");
         // get section range from results and render it
         targetContextTimelineChild = null;
         List<KeyValuePair<int, string>> currentResultsSection = loadedTimelineResults.GetRange(startIndex, resultsToShow);
         for (int i = 0; i < currentResultsSection.Count; i++)
         {
+            Debug.Log("TIMELINEEXECUTED - LoadTimelineSection StartLoop! " + i);
             // create timeline child game object using cell prefab
             GameObject timelineChild = Instantiate(timelineChildPrefab);
             timelineChild.AddComponent<ViRMA_TimelineChild>().LoadTimelineChild(currentResultsSection[i].Key, currentResultsSection[i].Value);
+            Debug.Log("TIMELINEEXECUTED - LoadTimelineSection Loop After Child! " + i);
 
             // if this is a context timeline, reference the target child to be focused on
             if (isContextTimeline && targetContextTimelineChildId == currentResultsSection[i].Key)
             {
                 targetContextTimelineChild = timelineChild;
             }
+            Debug.Log("TIMELINEEXECUTED - LoadTimelineSection Loop After First if! " + i);
 
             // set wrapper as parent and adjust scale for image aspect ratio
             timelineChild.transform.parent = timelineChildrenWrapper.transform;
@@ -408,6 +445,7 @@ public class ViRMA_Timeline : MonoBehaviour
             float offset = childWidth * childRelativeSpacing * i;
             float xPos = offset + (childWidth * i);
             timelineChild.transform.position = new Vector3(xPos, 0, 0);
+            Debug.Log("TIMELINEEXECUTED - LoadTimelineSection Loop After Transforms! " + i);
 
             // grab first and last real children in timeline (i.e. not nav btns)
             if (i == 0)
@@ -418,9 +456,11 @@ public class ViRMA_Timeline : MonoBehaviour
             {
                 lastRealChild = timelineChild;
             }
+            Debug.Log("TIMELINEEXECUTED - LoadTimelineSection Loop After Last if! " + i);
 
             // add child to list for reference
             timelineSectionChildren.Add(timelineChild);
+            Debug.Log("TIMELINEEXECUTED - LoadTimelineSection EndLoop");
         }
 
         // get associated metadata for each child in section (for non-concurrent fetch)
@@ -435,6 +475,7 @@ public class ViRMA_Timeline : MonoBehaviour
         currentTimelineSection = sectionIndex;
 
         timelineLoaded = true;
+        Debug.Log("TIMELINEEXECUTED - LoadTimelineSection FINISH");
     }
     public void LoadTimelineData(GameObject submittedCell)
     {
@@ -449,20 +490,23 @@ public class ViRMA_Timeline : MonoBehaviour
             timelineCellData = submittedCell.GetComponent<ViRMA_Cell>().thisCellData;
             activeVizLabels = globals.vizController.activeAxesLabels;
         
-            // if X axis exits, find location of submitted call on it and grab data
+            // if X axis exists, find location of submitted call on it and grab data
             if (activeVizLabels.X != null)
             {
+                Debug.Log("TIMELINEEXECUTED - X-label");
                 int cellXPosition = (int) timelineCellData.Coordinates.x - 1;
                 int cellXAxisId = activeVizLabels.X.Labels[cellXPosition].Id;
                 string cellXAxisType = activeVizLabels.X.Type;
 
                 Query.Filter projFilterX = new Query.Filter(cellXAxisType, new List<int>() { cellXAxisId });
                 cellFiltersForTimeline.Add(projFilterX);
+                Debug.Log("TIMELINEEXECUTED - X-label - CellFiltersForTimeline: " + cellFiltersForTimeline);
             }
 
             // if Y axis exits, find location of submitted call on it and grab data
             if (activeVizLabels.Y != null)
             {
+                Debug.Log("TIMELINEEXECUTED - Y-label");
                 int cellYPosition = (int)timelineCellData.Coordinates.y - 1;
                 int cellYAxisId = activeVizLabels.Y.Labels[cellYPosition].Id;
                 string cellYAxisType = activeVizLabels.Y.Type;
@@ -474,6 +518,7 @@ public class ViRMA_Timeline : MonoBehaviour
             // if Z axis exits, find location of submitted call on it and grab data
             if (activeVizLabels.Z != null)
             {
+                Debug.Log("TIMELINEEXECUTED - Z-label");
                 int cellZPosition = (int)timelineCellData.Coordinates.z - 1;
                 int cellZAxisId = activeVizLabels.Z.Labels[cellZPosition].Id;
                 string cellZAxisType = activeVizLabels.Z.Type;
@@ -484,6 +529,7 @@ public class ViRMA_Timeline : MonoBehaviour
 
             // get timeline image data from server and load it
             StartCoroutine(ViRMA_APIController.GetTimeline(cellFiltersForTimeline, (results) => {
+                Debug.Log("TIMELINEEXECUTED - StartCoroutine");
 
                 timelineResults = results;
 

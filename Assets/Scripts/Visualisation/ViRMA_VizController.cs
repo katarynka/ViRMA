@@ -58,17 +58,41 @@ public class ViRMA_VizController : MonoBehaviour
         rigidBody.drag = 0.1f;
         rigidBody.angularDrag = 0.5f;
     }
-    
+
+
+
     private void Update()
     {
         if (vizFullyLoaded)
         {
             // enable viz movement with SteamVR controllers
-            CellNavigationController();
+            //CellNavigationController();
 
             // prevent viz from moving too far away if moving
-            CellNavigationLimiter();
+            //CellNavigationLimiter();
+
         }
+       
+
+        if (OVRInput.GetActiveController() == OVRInput.Controller.Hands)
+        {
+            if (OVRInput.Get(OVRInput.Button.Three))
+            {
+                SubmitCellForTimeline();
+                DrillDownRollUp();
+            }
+        }
+        else if (OVRInput.GetDown(OVRInput.Button.One))
+        {
+            SubmitCellForTimeline();
+            DrillDownRollUp();
+        }
+
+
+        //if (OVRInput.GetDown(OVRInput.Button.One))
+        //{
+        //    DrillDownRollUp();
+        //}
 
         // draw axes line renderers 
         DrawAxesLines();
@@ -119,6 +143,8 @@ public class ViRMA_VizController : MonoBehaviour
         // set loading flags to true and unfade controllers
         vizFullyLoaded = true;
         globals.queryController.vizQueryLoading = false;
+        transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.5f) + new Vector3(0.5f, 0, 0.3f);
+        //transform.rotation = transform.rotation = Camera.main.transform.rotation;
         //globals.ToggleControllerFade(Player.instance.leftHand, false);
         //globals.ToggleControllerFade(Player.instance.rightHand, false);
     }
@@ -547,7 +573,7 @@ public class ViRMA_VizController : MonoBehaviour
             //Vector3 flattenedVector = Player.instance.bodyDirectionGuess;
             flattenedVector.y = 0;
             flattenedVector.Normalize();
-            Vector3 spawnPos = new Vector3(0, 1, 2);
+            Vector3 spawnPos = new Vector3(0, 0.25f, 0.25f);
             //Vector3 spawnPos = Player.instance.hmdTransform.position + flattenedVector * distance;
             transform.position = spawnPos;
             //transform.LookAt(2 * transform.position - Player.instance.hmdTransform.position); // flip viz 180 degrees from 'LookAt'
@@ -649,8 +675,10 @@ public class ViRMA_VizController : MonoBehaviour
     {
         if (toHide)
         {
+            Debug.Log("load vizquery outside if");
             if (vizFullyLoaded)
             {
+                Debug.Log("load vizquery");
                 activeVizPosition = transform.position;
                 activeVizRotation = transform.rotation;
 
@@ -683,10 +711,10 @@ public class ViRMA_VizController : MonoBehaviour
                 rigidBody.isKinematic = false;
             }
 
-            if (globals.vizNav_Position.GetState(SteamVR_Input_Sources.Any) && globals.vizNav_Rotation.GetState(SteamVR_Input_Sources.Any))
-            {
-                // ToggleCellScaling();
-            }
+            //if (globals.vizNav_Position.GetState(SteamVR_Input_Sources.Any) && globals.vizNav_Rotation.GetState(SteamVR_Input_Sources.Any))
+            //{
+            //    // ToggleCellScaling();
+            //}
             else if (globals.vizNav_Position.GetState(SteamVR_Input_Sources.Any) || globals.vizNav_Rotation.GetState(SteamVR_Input_Sources.Any))
             {
                 if (globals.vizNav_Position.GetState(SteamVR_Input_Sources.Any))
@@ -831,7 +859,7 @@ public class ViRMA_VizController : MonoBehaviour
 
 
     // node interaction (drill dowm, roll up, timeline for cell)
-    public void DrillDownRollUp(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    public void DrillDownRollUp()
     {
         if (focusedAxisPoint != null)
         {
@@ -898,11 +926,14 @@ public class ViRMA_VizController : MonoBehaviour
             }
         }
     }
-    public void SubmitCellForTimeline(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    public void SubmitCellForTimeline()
     {
+        Debug.Log("OUTSIDE IF");
         if (focusedCell != null)
         {
+            Debug.Log("INSIDE IF");
             globals.timeline.LoadTimelineData(focusedCell);
+            Debug.Log("INSIDE IF AFTER CALL");
         }      
     }
 

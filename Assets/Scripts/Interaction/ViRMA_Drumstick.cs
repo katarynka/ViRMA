@@ -6,23 +6,23 @@ using Valve.VR.InteractionSystem;
 public class ViRMA_Drumstick : MonoBehaviour
 {
     private ViRMA_GlobalsAndActions globals;
-    public Hand hand; 
+    public OVRCameraRig m_CameraRig;
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        // define ViRMA globals script
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+        Debug.Log("GLOBALS: " + globals);
+
     }
 
     void Start()
     {
-        if (hand)
-        {
-            if (hand.gameObject.transform.Find("HoverPoint"))
-            {
-                GameObject steamVRHoverPoint = hand.gameObject.transform.Find("HoverPoint").gameObject;
+
+                GameObject steamVRHoverPoint = GameObject.Find("PokeLocation").gameObject;
                 steamVRHoverPoint.transform.position = transform.position;
-            }
-        }
+
         //GetComponent<Renderer>().material.renderQueue = 3001;
     }
 

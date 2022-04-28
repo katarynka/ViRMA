@@ -14,9 +14,13 @@ public class ViRMA_UIScrollable : MonoBehaviour
 
     private BoxCollider[] scrollingCols;
 
+    public OVRCameraRig m_CameraRig;
+
     private void Awake()
     {
-        globals = GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
+
         scrollRect = GetComponent<ScrollRect>();
         scrollContent = scrollRect.content.transform;
         rectangle = transform.GetComponent<RectTransform>().rect;
