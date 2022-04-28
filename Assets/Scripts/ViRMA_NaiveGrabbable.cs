@@ -23,12 +23,7 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
     private bool isGrabbed = false;
 
     public float activationDistance;
-    public float grabBegin = 0.55f;
-    public float grabEnd = 0.35f;
-    protected float m_prevFlex;
 
-    [SerializeField]
-    protected OVRInput.Controller m_controller;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,13 +36,7 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
     {
         PokeRenderer();
 
-        // ovr grabbable stuff
-        float prevFlex = m_prevFlex;
-        // Update values from inputs
-        m_prevFlex = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, m_controller);
         StartGrab();
-        //CheckForGrabOrRelease(prevFlex);
-
 
         ControllerModelRendering();
 
@@ -94,27 +83,6 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
                 virmaGrabStatus.grabbedObject = null;
             }
 
-        }
-    }
-
-        void EndGrab()
-    {
-        if (isGrabbed) 
-        {        
-            virmaGrabStatus.grabStatus = true;
-            isGrabbed = false;
-        }
-    }
-
-    protected void CheckForGrabOrRelease(float prevFlex)
-    {
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && IsCloseEnough() && OVRInput.GetActiveController() == OVRInput.Controller.Touch && !virmaGrabStatus.grabStatus)
-        {
-            StartGrab();
-        }
-        else if ((m_prevFlex <= grabEnd) && (prevFlex > grabEnd))
-        {
-            EndGrab();
         }
     }
 
