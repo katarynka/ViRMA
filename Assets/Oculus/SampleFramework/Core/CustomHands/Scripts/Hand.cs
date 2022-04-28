@@ -184,10 +184,14 @@ namespace OVRTouchSample
         private void UpdateAnimStates()
         {
             bool grabbing = m_grabber.grabbedObject != null;
+            //Debug.Log("grabbing assigned");
+            //Debug.Log(grabbing);
             HandPose grabPose = m_defaultGrabPose;
             if (grabbing)
             {
+                Debug.Log("grabbing");
                 HandPose customPose = m_grabber.grabbedObject.GetComponent<HandPose>();
+                Debug.Log(customPose);
                 if (customPose != null) grabPose = customPose;
             }
             // Pose

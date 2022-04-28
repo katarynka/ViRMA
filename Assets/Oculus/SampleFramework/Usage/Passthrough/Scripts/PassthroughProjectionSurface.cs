@@ -1,21 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PassthroughProjectionSurface : MonoBehaviour
 {
     private OVRPassthroughLayer passthroughLayer;
     public MeshFilter projectionObject;
     MeshRenderer quadOutline;
+    public float activationDistance;
 
     void Start()
     {
+        activationDistance = 0.25f;
+
         GameObject ovrCameraRig = GameObject.Find("OVRCameraRig");
         if (ovrCameraRig == null)
         {
             Debug.LogError("Scene does not contain an OVRCameraRig");
             return;
         }
+
 
         passthroughLayer = ovrCameraRig.GetComponent<OVRPassthroughLayer>();
         if (passthroughLayer == null)
@@ -33,22 +39,24 @@ public class PassthroughProjectionSurface : MonoBehaviour
 
     void Update()
     {
-        // Hide object when A button is held, show it again when button is released, move it while held.
-        if (OVRInput.GetDown(OVRInput.Button.One))
-        {
-            passthroughLayer.RemoveSurfaceGeometry(projectionObject.gameObject);
-            quadOutline.enabled = true;
-        }
-        if (OVRInput.Get(OVRInput.Button.One))
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && IsCloseEnough())
         {
             OVRInput.Controller controllingHand = OVRInput.Controller.RTouch;
             transform.position = OVRInput.GetLocalControllerPosition(controllingHand);
             transform.rotation = OVRInput.GetLocalControllerRotation(controllingHand);
-        }
-        if (OVRInput.GetUp(OVRInput.Button.One))
-        {
-            passthroughLayer.AddSurfaceGeometry(projectionObject.gameObject);
-            quadOutline.enabled = false;
+            passthroughLayer.RemoveSurfaceGeometry(projectionObject.gameObject);
+            quadOutline.enabled = true;
         }
     }
+
+
+    bool IsCloseEnough()
+    {
+        OVRInput.Controller controllingHand = OVRInput.Controller.RTouch;
+        if (Mathf.Abs(Vector3.Distance(OVRInput.GetLocalControllerPosition(controllingHand), transform.position)) < activationDistance)
+            return true;
+
+        return false;
+    }
+
 }

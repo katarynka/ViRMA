@@ -250,7 +250,7 @@ public static class OVRInput
 	private static readonly float AXIS_AS_BUTTON_THRESHOLD = 0.5f;
 	private static readonly float AXIS_DEADZONE_THRESHOLD = 0.2f;
 	private static List<OVRControllerBase> controllers;
-	private static Controller activeControllerType = Controller.None;
+	public static Controller activeControllerType = Controller.None;
 	private static Controller connectedControllerTypes = Controller.None;
 	private static OVRPlugin.Step stepType = OVRPlugin.Step.Render;
 	private static int fixedUpdateCount = 0;
@@ -342,6 +342,7 @@ public static class OVRInput
 				}
 			}
 		}
+
 
 		if ((activeControllerType == Controller.LTouch) || (activeControllerType == Controller.RTouch))
 		{
@@ -2380,6 +2381,7 @@ public static class OVRInput
 			return currentState.RBatteryPercentRemaining;
 		}
 	}
+
 
 	private class OVRControllerHands : OVRControllerBase
 	{

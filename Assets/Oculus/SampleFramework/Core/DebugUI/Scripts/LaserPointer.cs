@@ -23,10 +23,10 @@ public class LaserPointer : OVRCursor
         Off,        // laser beam always off
         OnWhenHitTarget,  // laser beam only activates when hit valid target
     }
-
     public GameObject cursorVisual;
     public float maxLength = 10.0f;
 
+    [SerializeField]
     private LaserBeamBehavior _laserBeamBehavior;
     bool m_restoreOnInputAcquired = false;
 
@@ -38,6 +38,7 @@ public class LaserPointer : OVRCursor
             if (laserBeamBehavior == LaserBeamBehavior.Off || laserBeamBehavior == LaserBeamBehavior.OnWhenHitTarget)
             {
                 lineRenderer.enabled = false;
+                Debug.Log("LaserPointer.cs line: 41, lineRenderer");
             }
             else
             {
@@ -62,6 +63,7 @@ public class LaserPointer : OVRCursor
 
     private void Start()
     {
+        Debug.Log("LaserPointer.cs line: 65, start()");
         if (cursorVisual) cursorVisual.SetActive(false);
         OVRManager.InputFocusAcquired += OnInputFocusAcquired;
         OVRManager.InputFocusLost += OnInputFocusLost;
@@ -83,9 +85,10 @@ public class LaserPointer : OVRCursor
 
     private void LateUpdate()
     {
-        lineRenderer.SetPosition(0, _startPoint);
+    lineRenderer.SetPosition(0, _startPoint);
         if (_hitTarget)
         {
+            Debug.Log("LaserPointer.cs line: 88, lateUpdate() hitTarget");
             lineRenderer.SetPosition(1, _endPoint);
             UpdateLaserBeam(_startPoint, _endPoint);
             if (cursorVisual)
@@ -96,6 +99,7 @@ public class LaserPointer : OVRCursor
         }
         else
         {
+            Debug.Log("LaserPointer.cs line: 88, lateUpdate() notHit");
             UpdateLaserBeam(_startPoint, _startPoint + maxLength * _forward);
             lineRenderer.SetPosition(1, _startPoint + maxLength * _forward);
             if (cursorVisual) cursorVisual.SetActive(false);
@@ -105,8 +109,9 @@ public class LaserPointer : OVRCursor
     // make laser beam a behavior with a prop that enables or disables
     private void UpdateLaserBeam(Vector3 start, Vector3 end)
     {
-        if (laserBeamBehavior == LaserBeamBehavior.Off)
+    if (laserBeamBehavior == LaserBeamBehavior.Off)
         {
+            Debug.Log("LaserPointer.cs line: 109, UpdateLaserBeam() if");
             return;
         }
         else if (laserBeamBehavior == LaserBeamBehavior.On)
@@ -116,6 +121,7 @@ public class LaserPointer : OVRCursor
         }
         else if (laserBeamBehavior == LaserBeamBehavior.OnWhenHitTarget)
         {
+            Debug.Log("LaserPointer.cs line: 109, UpdateLaserBeam() elseIf");
             if (_hitTarget)
             {
                 if (!lineRenderer.enabled)
@@ -127,6 +133,7 @@ public class LaserPointer : OVRCursor
             }
             else
             {
+                Debug.Log("LaserPointer.cs line: 109, UpdateLaserBeam() else");
                 if (lineRenderer.enabled)
                 {
                     lineRenderer.enabled = false;
@@ -137,7 +144,8 @@ public class LaserPointer : OVRCursor
 
     void OnDisable()
     {
-        if (cursorVisual) cursorVisual.SetActive(false);
+    Debug.Log("LaserPointer.cs line: 144, OnDisable()");
+    if (cursorVisual) cursorVisual.SetActive(false);
     }
     public void OnInputFocusLost()
     {
@@ -150,7 +158,8 @@ public class LaserPointer : OVRCursor
 
     public void OnInputFocusAcquired()
     {
-        if (m_restoreOnInputAcquired && gameObject)
+    Debug.Log("LaserPointer.cs line: 158, OnInputFocus");
+    if (m_restoreOnInputAcquired && gameObject)
         {
             m_restoreOnInputAcquired = false;
             gameObject.SetActive(true);
@@ -159,7 +168,8 @@ public class LaserPointer : OVRCursor
 
     private void OnDestroy()
     {
-        OVRManager.InputFocusAcquired -= OnInputFocusAcquired;
+    Debug.Log("LaserPointer.cs OnDestroy ");
+    OVRManager.InputFocusAcquired -= OnInputFocusAcquired;
         OVRManager.InputFocusLost -= OnInputFocusLost;
     }
 }

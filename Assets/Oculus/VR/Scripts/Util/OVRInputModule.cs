@@ -615,7 +615,7 @@ namespace UnityEngine.EventSystems
                 // The Unity UI system expects event data to have a screen position
                 // so even though this raycast came from a world space ray we must get a screen
                 // space position for the camera attached to this raycaster for compatability
-                leftData.position = ovrRaycaster.GetScreenPosition(raycast);
+                //leftData.position = ovrRaycaster.GetScreenPosition(raycast);
 
                 // Find the world position and normal the Graphic the ray intersected
                 RectTransform graphicRect = raycast.gameObject.GetComponent<RectTransform>();
