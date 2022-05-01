@@ -4753,8 +4753,9 @@ GameObject:
   - component: {fileID: 207299599}
   - component: {fileID: 207299601}
   - component: {fileID: 207299600}
-  - component: {fileID: 207299603}
   - component: {fileID: 207299602}
+  - component: {fileID: 207299603}
+  - component: {fileID: 207299604}
   m_Layer: 0
   m_Name: Timeline
   m_TagString: Untagged
@@ -4837,11 +4838,24 @@ SphereCollider:
   m_GameObject: {fileID: 207299598}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &207299603
+--- !u!65 &207299603
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207299598}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &207299604
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4850,14 +4864,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 207299598}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bf6443c17ce2314e98f2ece945ee44a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_allowOffhandGrab: 1
-  m_snapPosition: 0
-  m_snapOrientation: 0
-  m_snapOffset: {fileID: 0}
-  m_grabPoints: []
+  rightControllerModel: {fileID: 2093847470}
+  rightHand: {fileID: 1552637835}
+  controller: {fileID: 615951945}
+  addition: {x: 0, y: 0, z: 0, w: 1}
+  allowThumbstickManipulation: 0
+  snapToController: 0
+  faceRotation: 0
+  m_CameraRig: {fileID: 0}
+  virmaGrabStatus: {fileID: 0}
+  activationDistance: 0.2
 --- !u!1 &210961798
 GameObject:
   m_ObjectHideFlags: 0
@@ -10895,7 +10914,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 8, y: 239.9999}
+  m_AnchoredPosition: {x: 0.0005560734, y: 239.9999}
   m_SizeDelta: {x: 176, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &483924414
@@ -17724,7 +17743,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.55752563}
+  m_AnchoredPosition: {x: 0, y: -1.2271729}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &732958351
@@ -18780,7 +18799,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 796249688}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 716da74908a3a09469bfa78e4454ac29, type: 3}
   m_Name: 
@@ -18949,7 +18968,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 796249688}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3570a2a1e6aea4047bd0a6395719a5cf, type: 3}
   m_Name: 
@@ -20961,7 +20980,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.010368347}
+  m_AnchoredPosition: {x: 0, y: 0.008110046}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &899388483
@@ -29759,7 +29778,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.010368347}
+  m_AnchoredPosition: {x: 0, y: 0.008110046}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1340729698
@@ -29876,7 +29895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.010368347}
+  m_AnchoredPosition: {x: 0, y: 0.008110046}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1343416158
@@ -39690,9 +39709,8 @@ PrefabInstance:
     - target: {fileID: 1234712044703238707, guid: fab932f84fb3e764eb5e0f73c5dfbbd0,
         type: 3}
       propertyPath: m_text
-      value: 'The purpose of this menu is to provide basic information regarding
-        the ViRMA software and how to use it. You can toggle this menu at any moment
-        by pressing the X button on the left controller.
+      value: 'Toggle this menu at any moment by pressing the X button on the left
+        controller.
 
 
 '
@@ -39701,15 +39719,15 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: "This software is controlled via three means:\n\n1. The Oculus Touch
-        controllers\n2. A keyboard attached to the PC\n3. Your physical hands\n\nWe
-        will describe how to use each in the following section.\n\nTOUCH CONTROLLERS\n 
-        Left hand:\n    X button: Toggle this menu\n  Right hand:\n    A button:
-        submit/confirm choice \n    Index Trigger (hold): Grab an object\n    Thumbstick
-        (while grabbing): Rotate and scale\n\nKEYBOARD\n   Enter: Show search field\n  
-        Enter (while search field present): Initiate search\n   Escape: Hide search
-        field\n\nHANDS\n   Your hands are used for interacting with menus without
-        the need for controllers. This is done by using a pointed index finger to
-        scroll menus and press buttons."
+        controllers\n2. A physical keyboard\n3. Your hands\n\nWe will describe how
+        to use each in the following section.\n\nTOUCH CONTROLLERS\n  Left hand:\n   
+        X button: Toggle this menu\n  Right hand:\n    A button: submit/confirm choice
+        \n    B button: go back (when browsing pictures)\n    Index Trigger (hold):
+        Grab an object\n    Thumbstick (while grabbing): Rotate and scale\n\nKEYBOARD\n  
+        Enter: Show search field\n   Enter (while search field present): Initiate
+        search\n   Escape: Hide search field\n\nHANDS\n   Interact with menus without
+        the need for controllers. \n   Poke & scroll:  Use a pointed index finger
+        or the ball attached to the controllers to scroll menus and press buttons.\n"
       objectReference: {fileID: 0}
     - target: {fileID: 4571331537952644426, guid: fab932f84fb3e764eb5e0f73c5dfbbd0,
         type: 3}
@@ -39810,6 +39828,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5970214508400350285, guid: fab932f84fb3e764eb5e0f73c5dfbbd0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -134
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fab932f84fb3e764eb5e0f73c5dfbbd0, type: 3}
@@ -41728,8 +41751,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 483924412}
-  m_Horizontal: 0
-  m_Vertical: 1
+  m_Horizontal: 1
+  m_Vertical: 0
   m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 1

@@ -72,7 +72,7 @@ public class ViRMA_TimelineChild : MonoBehaviour
     // triggers for UI drumsticks
     private void OnTriggerEnter(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        if (isNextBtn || isPrevBtn)
         {
             if (delayComplete)
             {
@@ -91,12 +91,12 @@ public class ViRMA_TimelineChild : MonoBehaviour
     }
     private void OnTriggerExit(Collider triggeredCol)
     {
-        if (triggeredCol.GetComponent<ViRMA_Drumstick>())
+        if (isNextBtn || isPrevBtn)
         {
             if (globals.timeline.hoveredChild == gameObject)
             {
                 globals.timeline.hoveredChild = null;
-
+                ToggleBorder(false);
                 if (contextMenuActiveOnChild == false)
                 {
                     //ToggleBorder(false);

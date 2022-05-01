@@ -6,11 +6,13 @@ public class ViRMA_TimelineContextMenu : MonoBehaviour
     private ViRMA_GlobalsAndActions globals;
 
     // target timeline child paramters
-    public GameObject targetTimelineChild;   
+    public GameObject targetTimelineChild;
+    public OVRCameraRig m_CameraRig;
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
     }
 
     private void Update()

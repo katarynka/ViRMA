@@ -7,7 +7,9 @@ public class ViRMA_TimeLineContextMenuBtn : MonoBehaviour
     private ViRMA_GlobalsAndActions globals;
 
     public GameObject targetTimelineChild;
-    public string btnType;  
+    public string btnType;
+    public OVRCameraRig m_CameraRig;
+
 
     // assigned inside prefab
     public TextMeshPro textMesh;
@@ -18,7 +20,8 @@ public class ViRMA_TimeLineContextMenuBtn : MonoBehaviour
 
     private void Awake()
     {
-        globals = Player.instance.gameObject.GetComponent<ViRMA_GlobalsAndActions>();
+        m_CameraRig = FindObjectOfType<OVRCameraRig>();
+        globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
 
         outerBgPropBlock = new MaterialPropertyBlock();
         innerBgPropBlock = new MaterialPropertyBlock();

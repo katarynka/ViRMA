@@ -85,8 +85,6 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
 
     private void Update()
     {
-             
-        //Debug.Log("controller position? " + UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftHand));
 
         UnityEngine.XR.InputDevices.GetDevicesAtXRNode(UnityEngine.XR.XRNode.RightHand, rightHandDevices);
         oculusRightController = rightHandDevices[0];
@@ -95,16 +93,7 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
         oculusLeftController = leftHandDevices[0];
 
         bool triggerValue;
-        //if (oculusRightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
-        //{
-        //    Debug.Log("Trigger button is pressed");
-        //    mainMenu.ToggleMainMenu(true);
-        //}
-        //if (oculusRightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
-        //{
-        //    //Debug.Log("Primary button is pressed");
-        //    mainMenu.ToggleMainMenu(true);
-        //}
+    
 
         if (oculusLeftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue)
         {
@@ -179,9 +168,9 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
         //dimExplorer_Select[SteamVR_Input_Sources.Any].onStateDown += dimExplorer.SubmitContextBtnForQuery;
 
         //timeline explorer 
-        timeline_Select[SteamVR_Input_Sources.Any].onStateDown += timeline.SubmitChildForContextMenu;
+        //timeline_Select[SteamVR_Input_Sources.Any].onStateDown += timeline.SubmitChildForContextMenu;
         timeline_Select[SteamVR_Input_Sources.Any].onStateDown += timeline.SubmitContextMenuBtn;
-        timeline_Back[SteamVR_Input_Sources.Any].onStateDown += timeline.BackButton;
+        //timeline_Back[SteamVR_Input_Sources.Any].onStateDown += timeline.BackButton;
 
         // testing
         //menuInteraction_Scroll[SteamVR_Input_Sources.Any].onAxis += mainMenu.TestScroll;

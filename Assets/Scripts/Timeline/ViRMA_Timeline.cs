@@ -74,7 +74,7 @@ public class ViRMA_Timeline : MonoBehaviour
         timelineScale = 0.3f; // global scale of timeline
         childRelativeSpacing = 0.25f; // % width of the child to space by
         timelinePositionDistance = 0.03f; // how far away to place the timeline in front of user
-        resultsRenderSize = 100; // max results to render at a time
+        resultsRenderSize = 10; // max results to render at a time
         contextTimelineTimespan = 60; // number of minutes on each side of target for context timeline
         Debug.Log("ViRMA_Timeline.cs - Awake()");
     }
@@ -97,28 +97,32 @@ public class ViRMA_Timeline : MonoBehaviour
             TimelineMovementLimiter();
         }
 
+        // JBAL KTOB
         LoadingIndicator();
 
-        // JBAL KTOB
+        if (OVRInput.GetDown(OVRInput.Button.Two))
+        {
+            BackButton();
+        }
+
+        if (OVRInput.Get(OVRInput.Button.One))
+        {
+            SubmitChildForContextMenu();
+        }
+
     }
 
     private void LoadingIndicator()
     {
         if (!timelineLoaded & globals.vizController.cellSubmitedForTimeline)
         {
-            //if (!loadingIcon.transform.parent.gameObject.activeSelf)
-            //{
-            //    loadingIcon.transform.parent.gameObject.SetActive(true);
-            //}
             loadingIcon.transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.2f);
+            //Quaternion rotation = Camera.main.transform.rotation;
+            //loadingIcon.transform.rotation = rotation;
             loadingIcon.transform.Rotate(0, 0, -300f * Time.deltaTime);
         }
         else
         {
-            //if (loadingIcon.transform.parent.gameObject.activeSelf)
-            //{
-            //    loadingIcon.transform.parent.gameObject.SetActive(false);
-            //}
             loadingIcon.transform.position = new Vector3(0, 99999, 0);
         }
 
@@ -161,19 +165,15 @@ public class ViRMA_Timeline : MonoBehaviour
         if (thumbstickAxes.x < -0.5)
         {
             float movementRate = 0.02f;
-            Vector3 newPosition = new Vector3(transform.position.x - movementRate, Camera.main.transform.position.y, transform.position.z);
+            Vector3 newPosition = new Vector3(transform.position.x - movementRate, transform.position.y, transform.position.z);
             transform.position = newPosition;
-            Quaternion rotation = Camera.main.transform.rotation;
-            transform.rotation = rotation;
         }
 
         if (thumbstickAxes.x > 0.5)
         {
             float movementRate = 0.02f;
-            Vector3 newPosition = new Vector3(transform.position.x + movementRate, Camera.main.transform.position.y, transform.position.z);
+            Vector3 newPosition = new Vector3(transform.position.x + movementRate, transform.position.y, transform.position.z);
             transform.position = newPosition;
-            Quaternion rotation = Camera.main.transform.rotation;
-            transform.rotation = rotation;
         }
 
     }
@@ -283,8 +283,10 @@ public class ViRMA_Timeline : MonoBehaviour
         if (activeTimelinePosition == Vector3.one * Mathf.Infinity || activeTImelineRotation == Quaternion.identity)
         {
             // JBAL KTOB spawn timeline in front of the camera
-            transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.6f);
-            transform.rotation = Camera.main.transform.rotation;
+            //transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.6f);
+            //transform.rotation = Camera.main.transform.rotation;
+            transform.position = m_CameraRig.centerEyeAnchor.transform.position + new Vector3(-1.9f, 0, 0.6f);
+            //transform.rotation = m_CameraRig.centerEyeAnchor.transform.rotation;
 
             activeTimelinePosition = transform.position;
             activeTImelineRotation = transform.rotation;
@@ -430,7 +432,6 @@ public class ViRMA_Timeline : MonoBehaviour
         ClearTimeline();
 
         // create wrapper
-        // JBAL KTOB
         timelineChildrenWrapper = new GameObject("TimelineChildrenWrapper");
         timelineChildrenWrapper.transform.parent = transform;
 
@@ -672,7 +673,7 @@ public class ViRMA_Timeline : MonoBehaviour
 
     
     // steamVR actions
-    public void SubmitChildForContextMenu(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    public void SubmitChildForContextMenu()
     {
         if (hoveredChild != null)
         {
@@ -685,13 +686,8 @@ public class ViRMA_Timeline : MonoBehaviour
             {
                 totalSections = totalTimeLineSections;
             }
-
-
-            if (!hoveredChild.GetComponent<ViRMA_TimelineChild>().isNextBtn && !hoveredChild.GetComponent<ViRMA_TimelineChild>().isPrevBtn)
-            {
-                //hoveredChild.GetComponent<ViRMA_TimelineChild>().LoadTImelineContextMenu();
-            }
-            else if (hoveredChild.GetComponent<ViRMA_TimelineChild>().isNextBtn)
+              
+            if (hoveredChild.GetComponent<ViRMA_TimelineChild>().isNextBtn)
             {
                 LoadTimelineSection(currentTimelineSection + 1, totalSections);
             }
@@ -722,7 +718,7 @@ public class ViRMA_Timeline : MonoBehaviour
             }
         }
     }
-    public void BackButton(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    public void BackButton()
     {
         if (timelineLoaded)
         {
