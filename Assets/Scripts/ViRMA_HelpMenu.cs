@@ -5,7 +5,7 @@ using UnityEngine;
 public class ViRMA_HelpMenu : MonoBehaviour
 {
     OVRInput.Button toggleButton;
-    public bool menuHidden = true;
+    public bool menuHidden;
     private ViRMA_GlobalsAndActions globals;
     private OVRCameraRig m_CameraRig;
 
@@ -18,9 +18,7 @@ public class ViRMA_HelpMenu : MonoBehaviour
         m_CameraRig = FindObjectOfType<OVRCameraRig>();
         // define ViRMA globals script
         globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
-
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -41,13 +39,13 @@ public class ViRMA_HelpMenu : MonoBehaviour
                 menuHidden = true;
             }
         }
+    }
 
-        if (OVRInput.GetDown(OVRInput.Button.Four))
-        {
-            globals.queryController.buildingQuery.ClearAxis("X", true);
-            globals.queryController.buildingQuery.ClearAxis("Y", true);
-            globals.queryController.buildingQuery.ClearAxis("Z", true);
-            globals.queryController.buildingQuery.ClearFilters();
-        }
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.5f);
+        transform.rotation = Camera.main.transform.rotation;
+        menuHidden = false;
     }
 }

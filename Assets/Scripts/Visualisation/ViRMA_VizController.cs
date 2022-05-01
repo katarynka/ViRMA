@@ -41,6 +41,8 @@ public class ViRMA_VizController : MonoBehaviour
 
     public OVRCameraRig m_CameraRig;
 
+    public bool cellSubmitedForTimeline;
+
     private void Awake()
     {
         // define ViRMA globals script
@@ -57,6 +59,8 @@ public class ViRMA_VizController : MonoBehaviour
         rigidBody.useGravity = false;
         rigidBody.drag = 0.1f;
         rigidBody.angularDrag = 0.5f;
+
+        cellSubmitedForTimeline = false;
     }
 
 
@@ -928,12 +932,10 @@ public class ViRMA_VizController : MonoBehaviour
     }
     public void SubmitCellForTimeline()
     {
-        Debug.Log("OUTSIDE IF");
         if (focusedCell != null)
         {
-            Debug.Log("INSIDE IF");
+            cellSubmitedForTimeline = true;
             globals.timeline.LoadTimelineData(focusedCell);
-            Debug.Log("INSIDE IF AFTER CALL");
         }      
     }
 

@@ -13,7 +13,7 @@ public class ViRMA_SpawnInFrontOfCamera : MonoBehaviour
     IEnumerator LateStart(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.5f) + new Vector3(0, -0.3f, 0);
+        transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.5f) + new Vector3(-0.2f, 0.1f, 0);
         transform.rotation = Camera.main.transform.rotation;
     }
 

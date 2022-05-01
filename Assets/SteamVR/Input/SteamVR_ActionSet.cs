@@ -209,7 +209,7 @@ namespace Valve.VR
         /// <param name="source">The device to check. Any means all devices here (not left or right, but all)</param>
         public bool IsActive(SteamVR_Input_Sources source = SteamVR_Input_Sources.Any)
         {
-            return setData.IsActive(source);
+            return true;//setData.IsActive(source);
         }
 
         /// <summary>

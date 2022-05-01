@@ -58,6 +58,8 @@ public class ViRMA_Timeline : MonoBehaviour
     private Vector2 thumbstickAxes;
     private float triggerAxis;
 
+    public GameObject loadingIcon;
+
     private void Awake()
     {
         m_CameraRig = FindObjectOfType<OVRCameraRig>();
@@ -94,7 +96,34 @@ public class ViRMA_Timeline : MonoBehaviour
 
             TimelineMovementLimiter();
         }
+
+        LoadingIndicator();
+
+        // JBAL KTOB
     }
+
+    private void LoadingIndicator()
+    {
+        if (!timelineLoaded & globals.vizController.cellSubmitedForTimeline)
+        {
+            //if (!loadingIcon.transform.parent.gameObject.activeSelf)
+            //{
+            //    loadingIcon.transform.parent.gameObject.SetActive(true);
+            //}
+            loadingIcon.transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.2f);
+            loadingIcon.transform.Rotate(0, 0, -300f * Time.deltaTime);
+        }
+        else
+        {
+            //if (loadingIcon.transform.parent.gameObject.activeSelf)
+            //{
+            //    loadingIcon.transform.parent.gameObject.SetActive(false);
+            //}
+            loadingIcon.transform.position = new Vector3(0, 99999, 0);
+        }
+
+    }
+
     private void TimelineMovement()
     {
         Hand activeHand = null;
@@ -132,15 +161,19 @@ public class ViRMA_Timeline : MonoBehaviour
         if (thumbstickAxes.x < -0.5)
         {
             float movementRate = 0.02f;
-            Vector3 newPosition = new Vector3(transform.position.x - movementRate, transform.position.y, transform.position.z);
+            Vector3 newPosition = new Vector3(transform.position.x - movementRate, Camera.main.transform.position.y, transform.position.z);
             transform.position = newPosition;
+            Quaternion rotation = Camera.main.transform.rotation;
+            transform.rotation = rotation;
         }
 
         if (thumbstickAxes.x > 0.5)
         {
             float movementRate = 0.02f;
-            Vector3 newPosition = new Vector3(transform.position.x + movementRate, transform.position.y, transform.position.z);
+            Vector3 newPosition = new Vector3(transform.position.x + movementRate, Camera.main.transform.position.y, transform.position.z);
             transform.position = newPosition;
+            Quaternion rotation = Camera.main.transform.rotation;
+            transform.rotation = rotation;
         }
 
     }
@@ -211,6 +244,7 @@ public class ViRMA_Timeline : MonoBehaviour
         Debug.Log("TIMELINEEXECUTED - ClearTimeLine START");
         // flad as timeline as unloaded
         timelineLoaded = false;
+        globals.vizController.cellSubmitedForTimeline = false;
 
         // clear list of active children
         timelineSectionChildren.Clear();
@@ -396,6 +430,7 @@ public class ViRMA_Timeline : MonoBehaviour
         ClearTimeline();
 
         // create wrapper
+        // JBAL KTOB
         timelineChildrenWrapper = new GameObject("TimelineChildrenWrapper");
         timelineChildrenWrapper.transform.parent = transform;
 

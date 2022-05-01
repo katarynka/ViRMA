@@ -367,7 +367,10 @@ public class ViRMA_APIController : MonoBehaviour
     //public static string imagesDirectory = System.IO.Directory.GetCurrentDirectory().ToString() + "/../LSC2021/";
     //public static string imagesDirectory = "D:/Downloads/LSC2021NoJpg/LSC2021/";
 
-    public static string imagesDirectory = "D:/Downloads/LSC2021_UnityVersion/LSC2021/";
+    //kat
+    public static string imagesDirectory = "H:/LSC2021/";
+
+    //public static string imagesDirectory = "D:/Downloads/LSC2021_UnityVersion/LSC2021/";
     //public ViRMA_SearchTagsScrollableMenu scrollableMenu = GameObject.FindWithTag(ScrollableUnityCanvas).GetComponent<ViRMA_SearchTagsScrollableMenu>();
 
     // private
