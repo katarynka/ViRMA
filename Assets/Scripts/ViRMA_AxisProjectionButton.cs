@@ -10,12 +10,14 @@ public class ViRMA_AxisProjectionButton : MonoBehaviour
     public Toggle toggleComponent;
     public Tag tagQueryData;
     public string axisQueryType;
+    private ViRMA_ColourClearButtons axisProjectionMenu;
 
     // Start is called before the first frame update
     void Start()
     {
         dimExplorer = GameObject.Find("DimensionExplorer").GetComponent<ViRMA_DimExplorer>();
-
+        axisProjectionMenu = GameObject.Find("ContextMenuButtonsCanvas").GetComponent<ViRMA_ColourClearButtons>();
+        Debug.Log("axis proj men " + axisProjectionMenu);
         // Get toggle component
         toggleComponent = gameObject.GetComponent<Toggle>();
         toggleComponent.isOn = false;
@@ -24,7 +26,6 @@ public class ViRMA_AxisProjectionButton : MonoBehaviour
 
         // Get the filter (based on gameobject name)
         axisQueryType = gameObject.name;
-        Debug.Log("CONTEXTBTN AXIS: " + axisQueryType);
     }
 
     // Update is called once per frame
@@ -34,11 +35,12 @@ public class ViRMA_AxisProjectionButton : MonoBehaviour
         // If toggle is on and no query has been made yet (to avoid repeated function calls)
         if (toggleComponent.isOn)
         {
-                Debug.Log(axisQueryType + " CONTEXTBTN ACTIVATED");
-                dimExplorer.SubmitContextBtnForQuery(tagQueryData, axisQueryType);
+            dimExplorer.SubmitContextBtnForQuery(tagQueryData, axisQueryType);
          
             StartCoroutine(Wait());
-            
+            //axisProjectionMenu.ColourButton(axisQueryType);
+
+
         }
     }
 

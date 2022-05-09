@@ -78,15 +78,7 @@ public class ViRMA_VizController : MonoBehaviour
         }
        
 
-        if (OVRInput.GetActiveController() == OVRInput.Controller.Hands)
-        {
-            if (OVRInput.Get(OVRInput.Button.Three))
-            {
-                SubmitCellForTimeline();
-                DrillDownRollUp();
-            }
-        }
-        else if (OVRInput.GetDown(OVRInput.Button.One))
+        if (OVRInput.GetDown(OVRInput.Button.One))
         {
             SubmitCellForTimeline();
             DrillDownRollUp();
@@ -147,7 +139,7 @@ public class ViRMA_VizController : MonoBehaviour
         // set loading flags to true and unfade controllers
         vizFullyLoaded = true;
         globals.queryController.vizQueryLoading = false;
-        transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.5f) + new Vector3(0.5f, 0, 0.3f);
+        transform.position = Camera.main.transform.position + new Vector3(-0.7f, 0, 0.6f);
         //transform.rotation = transform.rotation = Camera.main.transform.rotation;
         //globals.ToggleControllerFade(Player.instance.leftHand, false);
         //globals.ToggleControllerFade(Player.instance.rightHand, false);

@@ -13,13 +13,17 @@ public class ViRMA_SpawnInFrontOfCamera : MonoBehaviour
     IEnumerator LateStart(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.5f) + new Vector3(-0.2f, 0.1f, 0);
-        transform.rotation = Camera.main.transform.rotation;
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void SpawnScrollMenu()
+    {
+        gameObject.transform.position = Camera.main.transform.position + new Vector3(0.4f, 0, 0.3f);
+        gameObject.transform.rotation = Camera.main.transform.rotation;
     }
 }

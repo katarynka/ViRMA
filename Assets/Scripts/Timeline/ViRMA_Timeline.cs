@@ -74,9 +74,8 @@ public class ViRMA_Timeline : MonoBehaviour
         timelineScale = 0.3f; // global scale of timeline
         childRelativeSpacing = 0.25f; // % width of the child to space by
         timelinePositionDistance = 0.03f; // how far away to place the timeline in front of user
-        resultsRenderSize = 10; // max results to render at a time
+        resultsRenderSize = 5; // max results to render at a time
         contextTimelineTimespan = 60; // number of minutes on each side of target for context timeline
-        Debug.Log("ViRMA_Timeline.cs - Awake()");
     }
     private void Start()
     {
@@ -241,7 +240,6 @@ public class ViRMA_Timeline : MonoBehaviour
     // general
     public void ClearTimeline(bool hardReset = false)
     {
-        Debug.Log("TIMELINEEXECUTED - ClearTimeLine START");
         // flad as timeline as unloaded
         timelineLoaded = false;
         globals.vizController.cellSubmitedForTimeline = false;
@@ -275,7 +273,6 @@ public class ViRMA_Timeline : MonoBehaviour
             activeTimelinePosition = Vector3.one * Mathf.Infinity;
             activeTImelineRotation = Quaternion.identity;
         }
-        Debug.Log("TIMELINEEXECUTED - ClearTimeLine END");
     }
     private void PositionTimeline(int newSectionIndex)
     {
@@ -285,16 +282,14 @@ public class ViRMA_Timeline : MonoBehaviour
             // JBAL KTOB spawn timeline in front of the camera
             //transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 0.6f);
             //transform.rotation = Camera.main.transform.rotation;
-            transform.position = m_CameraRig.centerEyeAnchor.transform.position + new Vector3(-1.9f, 0, 0.6f);
+            transform.position = m_CameraRig.centerEyeAnchor.transform.position + new Vector3(-1.4f, 0, 0.6f);
             //transform.rotation = m_CameraRig.centerEyeAnchor.transform.rotation;
 
             activeTimelinePosition = transform.position;
             activeTImelineRotation = transform.rotation;
-            Debug.Log("ViRMA_Timeline.cs - position timeline");
         }
         else
         {
-            Debug.Log("ViRMA_Timeline.cs - position timeline (else statement)");
             transform.position = activeTimelinePosition;
             transform.rotation = activeTImelineRotation;
         }

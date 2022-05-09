@@ -74,7 +74,7 @@ public class ViRMA_GlobalsAndActions : MonoBehaviour
         dimExplorer = GameObject.Find("DimensionExplorer").GetComponent<ViRMA_DimExplorer>();
         mainMenu = GameObject.Find("MainMenu").GetComponent<ViRMA_MainMenu>();
         timeline = GameObject.Find("Timeline").GetComponent<ViRMA_Timeline>();
-        keyboard = GameObject.Find("DimExKeyboard").GetComponent<ViRMA_Keyboard>();
+        //keyboard = GameObject.Find("DimExKeyboard").GetComponent<ViRMA_Keyboard>();
 
         // assign all action sets
         AssignAllActionSets();

@@ -21,6 +21,7 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
     public OVRCameraRig m_CameraRig;
     public ViRMA_GlobalGrabStatus virmaGrabStatus;
     private bool isGrabbed = false;
+    public bool allowHandGrab = true;
 
     public float activationDistance;
 
@@ -47,7 +48,7 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && IsCloseEnough() && OVRInput.GetActiveController() == OVRInput.Controller.Touch)
         {
-            if(virmaGrabStatus.grabbedObject == null || virmaGrabStatus.grabbedObject == gameObject)
+            if (virmaGrabStatus.grabbedObject == null || virmaGrabStatus.grabbedObject == gameObject)
             {
                 //virmaGrabStatus.grabStatus = true;
                 virmaGrabStatus.grabbedObject = gameObject;
@@ -77,12 +78,38 @@ public class ViRMA_NaiveGrabbable : MonoBehaviour
                     /*(-42f, -10, 180);*/
                 }
 
-            }
+            }            
             else
             {
                 virmaGrabStatus.grabbedObject = null;
             }
+        }
+        else if (allowHandGrab && OVRInput.GetActiveController() == OVRInput.Controller.Hands)
+        {
+            if (OVRInput.Get(OVRInput.Button.Three) && IsCloseEnough())
+            {
+                if (virmaGrabStatus.grabbedObject == null || virmaGrabStatus.grabbedObject == gameObject)
+                {
+                    //virmaGrabStatus.grabStatus = true;
+                    virmaGrabStatus.grabbedObject = gameObject;
 
+                    GameObject parent = GameObject.Find("HandPokeInteractorLeft");
+
+                    pokeFinger = GetChildWithName(parent, "HandIndexFingertip");
+
+                    Vector3 position = pokeFinger.transform.position;
+                    transform.position = position + new Vector3(0.035f, 0.035f, 0.035f);
+                    if (faceRotation)
+                    {
+                        transform.rotation = Camera.main.transform.rotation;
+                    }
+
+                }
+                else
+                {
+                    virmaGrabStatus.grabbedObject = null;
+                }
+            }
         }
     }
 

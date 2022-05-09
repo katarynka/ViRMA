@@ -18,6 +18,8 @@ public class ViRMA_Keyboard : MonoBehaviour
     public ViRMA_SearchTagsScrollableMenu scrollableQueryMenu;
     public GameObject scrollableCanvas;
 
+    public ViRMA_SpawnInFrontOfCamera spawnScrollMenu;
+
     // flags
     public bool dimExQueryLoading;
     public bool keyboardLoaded;
@@ -32,6 +34,7 @@ public class ViRMA_Keyboard : MonoBehaviour
         globals = m_CameraRig.GetComponent<ViRMA_GlobalsAndActions>();
         scrollableCanvas = GameObject.Find("ScrollableUnityCanvas");
         scrollableQueryMenu = scrollableCanvas.GetComponentInChildren<ViRMA_SearchTagsScrollableMenu>();
+        spawnScrollMenu = scrollableCanvas.GetComponent<ViRMA_SpawnInFrontOfCamera>();
 
 
         keys = GetComponentsInChildren<Button>();
@@ -138,9 +141,10 @@ public class ViRMA_Keyboard : MonoBehaviour
         {
 
             // Set keyboard position to be in front of the camera
-            transform.position = Camera.main.transform.TransformPoint(Vector3.forward * 1f);
+            transform.position = Camera.main.transform.position + new Vector3(0, -0.1f, 0.4f);
             transform.rotation = Camera.main.transform.rotation;
             keyboardLoaded = true;
+            spawnScrollMenu.SpawnScrollMenu();
         }
         else
         {

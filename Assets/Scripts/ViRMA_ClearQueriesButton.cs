@@ -9,6 +9,7 @@ public class ViRMA_ClearQueriesButton : MonoBehaviour
     public string filterToClear;
     private ViRMA_GlobalsAndActions globals;
     private OVRCameraRig m_CameraRig;
+    private Color regular = new Color(142, 142, 142, 25);
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,7 @@ public class ViRMA_ClearQueriesButton : MonoBehaviour
         // If toggle is on and no query has been made yet (to avoid repeated function calls)
         if (toggleComponent.isOn)
         {
+            //new Color(255, 255, 255, 25);
             Debug.Log(filterToClear + " CLEARBTN ACTIVATED");
             if(filterToClear == "filter")
             { 
@@ -40,7 +42,9 @@ public class ViRMA_ClearQueriesButton : MonoBehaviour
             {
                 globals.queryController.buildingQuery.ClearAxis(filterToClear, true);
             }
-                
+            //ColorBlock cb = toggleComponent.colors;
+            //cb.normalColor = regular;
+            //toggleComponent.colors = cb;
         }
 
             StartCoroutine(Wait());
